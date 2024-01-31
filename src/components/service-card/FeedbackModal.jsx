@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { saveFeedback } from "../../services/feedback.service";
 
-export default function FeedbackModal( {meetingId, onClose} ) {
+export default function FeedbackModal( {user, meetingId, onClose} ) {
     const [showFeedbackForm, setShowFeedbackForm] = useState(false);
     const [selectedAttendeeEmail, setSelectedAttendeeEmail] = useState(null);
     const onClick = (attendeeEmail) => {
         setShowFeedbackForm(true);
         setSelectedAttendeeEmail(attendeeEmail);
-    }
+    } 
 
     return (
         <>
@@ -16,8 +17,7 @@ export default function FeedbackModal( {meetingId, onClose} ) {
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
                 {/*content*/}
                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                {showFeedbackForm ? <FeedbackForm attendeeEmail={selectedAttendeeEmail} onClose={onClose} /> : <Attendees attendees={[{name: "Attendee Name", email: "test@gmail.com"}]} onClick={(attendeeId) => onClick(attendeeId)} onClose={onClose} />
-                }
+                {showFeedbackForm ? <FeedbackForm user={user} meetingId={meetingId} attendeeEmail={selectedAttendeeEmail} onClose={onClose} /> : <Attendees attendees={[{name: "Attendee Name", email: "test@gmail.com"}]} onClick={(attendeeId) => onClick(attendeeId)} onClose={onClose} />}
             </div>
             </div>
             </div>
@@ -83,8 +83,8 @@ function Attendees( {attendees, onClick, onClose} ) {
     );
 }
 
-function FeedbackForm( {attendeeEmail, onClose} ) {
-    console.log(attendeeEmail)
+function FeedbackForm( {user, meetingId, attendeeEmail, onClose} ) {
+    const [feedback, setFeedback] = useState(null);
     return (
         <>
         <div className="flex items-end justify-end px-2 py-1 rounded-t">
@@ -105,6 +105,7 @@ function FeedbackForm( {attendeeEmail, onClose} ) {
                 id="feedback"
                 className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 defaultValue={''}
+                onChange={e => setFeedback(e.target.value)}
             />  
             </div>
             {/*footer*/}
@@ -119,7 +120,7 @@ function FeedbackForm( {attendeeEmail, onClose} ) {
                 <button
                 className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm p-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                onClick={() => console.log("submitted")}
+                onClick={() => saveFeedback({given_by: user.email, given_to: attendeeEmail, meetingId, feedback})}
                 >
                 Submit
                 </button>

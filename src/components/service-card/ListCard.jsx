@@ -49,6 +49,8 @@ import FeedbackModal from "./FeedbackModal"
 
 export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [selectedMeetingId, setSelectedMeetingId] = useState(null);
   const { user } = useAuth0();
 
   useEffect(() => {
@@ -131,8 +133,10 @@ export default function ListCard() {
                   <button
                     type="button"
                     className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
-                    onClick={() => setShowFeedbackModal(true)}
-                  >
+                    onClick={() => {
+                      setShowFeedbackModal(true);
+                      setSelectedMeetingId(meetingId);
+                    }}>
                     Give Feedback
                   </button>
                 </div>
