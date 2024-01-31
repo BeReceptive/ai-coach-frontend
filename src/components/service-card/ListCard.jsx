@@ -3,6 +3,7 @@ import "./cards.scss";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
+import FeedbackModal from "./FeedbackModal"
 
 // const discussions = [
 //   {
@@ -51,23 +52,23 @@ export default function ListCard() {
   const { user } = useAuth0();
 
   useEffect(() => {
-    const getPastMeetings = async () => {
-      const currentDate = new Date();
-      const oneWeekAgo = new Date(
-        currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
-      );
-      const threeHoursAgo = new Date(
-        currentDate.getTime() - 1 * 60 * 60 * 1000
-      );
-      const params = {
-        userEmail: user?.email,
-        timeMin: oneWeekAgo.toISOString(),
-        timeMax: threeHoursAgo.toISOString(),
-      };
-      const response = await GetGoogleCalendarEvents(params);
-      setPastMeetings(response?.data?.data);
-    };
-    getPastMeetings();
+  const getPastMeetings = async () => {
+  const currentDate = new Date();
+  const oneWeekAgo = new Date(
+  currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
+  );
+  const threeHoursAgo = new Date(
+  currentDate.getTime() - 1 * 60 * 60 * 1000
+  );
+  const params = {
+  userEmail: user?.email,
+  timeMin: oneWeekAgo.toISOString(),
+  timeMax: threeHoursAgo.toISOString(),
+  };
+  const response = await GetGoogleCalendarEvents(params);
+  setPastMeetings(response?.data?.data);
+  };
+  getPastMeetings();
   }, [user]);
 
   return (
@@ -130,6 +131,7 @@ export default function ListCard() {
                   <button
                     type="button"
                     className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                    onClick={() => setShowFeedbackModal(true)}
                   >
                     Give Feedback
                   </button>
@@ -141,6 +143,7 @@ export default function ListCard() {
       ) : (
         ""
       )}
+      {showFeedbackModal && <FeedbackModal meetingId={selectedMeetingId} onClose={() => setShowFeedbackModal(false)} />}
     </>
   );
 }
