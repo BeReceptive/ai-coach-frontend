@@ -88,6 +88,8 @@ export default function FeedbackModal({
 }
 
 function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
+  const [search, setSearch] = useState(null);
+  console.log(attendees);
   return (
     <>
       <div className="mb-2">
@@ -104,54 +106,59 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
             id="name"
             className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="Enter name"
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        {attendees.map((attendee) => (
-          <>
-            <div className="flex">
-              <div className="px-2">
-                <img
-                  className="h-10 w-10 rounded-full"
-                  src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
+        {attendees
+          .filter(
+            (attendee) => search == null || attendee.email.includes(search)
+          )
+          .map((attendee) => (
+            <>
+              <div className="flex">
+                <div className="px-2">
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt=""
+                  />
+                </div>
+                <div className="flex-col text-sm font-medium">
+                  <div>{attendee.name}</div>
+                  <div>{attendee.email}</div>
+                </div>
               </div>
-              <div className="flex-col text-sm font-medium">
-                <div>{attendee.name}</div>
-                <div>{attendee.email}</div>
-              </div>
-            </div>
-            <div className="w-25 gap-x-2.5 justify-self-end self-center">
-              <button
-                type="button"
-                className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
-                onClick={() => onClick(attendee)}
-                disabled={
-                  attendee.email == user.email ||
-                  feedbacks.filter(
-                    (feedback) =>
-                      feedback.meetingId == meetingId &&
-                      feedback.givenBy == user.email &&
-                      feedback.givenTo == attendee.email
-                  )
-                }
-              >
-                {attendee.email == user.email
-                  ? "Self"
-                  : feedbacks.filter(
+              <div className="w-25 gap-x-2.5 justify-self-end self-center">
+                <button
+                  type="button"
+                  className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                  onClick={() => onClick(attendee)}
+                  disabled={
+                    attendee.email == user.email ||
+                    feedbacks.filter(
                       (feedback) =>
                         feedback.meetingId == meetingId &&
                         feedback.givenBy == user.email &&
                         feedback.givenTo == attendee.email
                     )
-                  ? "Submitted"
-                  : "Give Feedback"}
-              </button>
-            </div>
-          </>
-        ))}
+                  }
+                >
+                  {attendee.email == user.email
+                    ? "Self"
+                    : feedbacks.filter(
+                        (feedback) =>
+                          feedback.meetingId == meetingId &&
+                          feedback.givenBy == user.email &&
+                          feedback.givenTo == attendee.email
+                      )
+                    ? "Submitted"
+                    : "Give Feedback"}
+                </button>
+              </div>
+            </>
+          ))}
       </div>
     </>
   );
