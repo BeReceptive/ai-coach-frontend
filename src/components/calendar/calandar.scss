@@ -1,8 +1,9 @@
-.calendar-card{
-  background: var(--white, #FFF);
+.calendar-card {
+  background: var(--white, #fff);
   /* /shadow/base */
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 3px 0px rgba(0, 0, 0, 0.10);
-  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.06),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   max-height: 425px;
   overflow-y: scroll;
   border-bottom-left-radius: 1rem;
@@ -23,11 +24,24 @@
   }
 }
 
-.short-calendar-card{
-  background: var(--white, #FFF);
+.short-calendar-card {
+  background: var(--white, #fff);
   /* /shadow/base */
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 3px 0px rgba(0, 0, 0, 0.10);
-  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.06),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 2rem;
 }
 
+.calendar_default_colheader,
+.calendar_default_corner,
+.calendar_default_cornerright {
+  padding: 10px 0 10px 0;
+}
+
+.calendar_default_rowheader_inner {
+  text-align: center !important;
+  div {
+    padding-top: 10px;
+  }
+}
