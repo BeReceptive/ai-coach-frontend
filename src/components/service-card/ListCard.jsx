@@ -85,15 +85,20 @@ export default function ListCard() {
               className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4 py-5 sm:flex-nowrap bg-white px-4 py-5 sm:px-6"
             >
               <div>
-                <p className="text-sm font-semibold leading-6 text-gray-900">
-                  <a href={discussion?.hangoutLink} className="hover:underline">
-                    {/* {discussion.title}{" "} */}
-                    <span className={"text-indigo-600"}>
-                      {discussion?.summary}
-                    </span>
-                    {/* <span className={"text-indigo-600"}>{discussion.position}</span> */}
-                  </a>
-                </p>
+                <div className="flex px-0.5">
+                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                    <a
+                      href={discussion?.hangoutLink}
+                      className="hover:underline"
+                    >
+                      {/* {discussion.title}{" "} */}
+                      <span className={"text-indigo-600"}>
+                        {discussion?.summary}
+                      </span>
+                      {/* <span className={"text-indigo-600"}>{discussion.position}</span> */}
+                    </a>
+                  </p>
+                </div>
                 <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
                   {/* <p>
                      <a href={discussion?.author?.href} className="hover:underline">
