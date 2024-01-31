@@ -1,5 +1,8 @@
-import { saveFeedback } from "../../services/feedback.service";
-import { Fragment, useState } from "react";
+import {
+  saveFeedback,
+  getFeedbacksByMeetingId,
+} from "../../services/feedback.service";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 export default function FeedbackModal({
@@ -11,10 +14,18 @@ export default function FeedbackModal({
 }) {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [selectedAttendee, setSelectedAttendee] = useState(null);
+  const [existingFeedbacks, setExistingFeedbacks] = useState([]);
   const onClick = (attendee) => {
     setShowFeedbackForm(true);
     setSelectedAttendee(attendee);
   };
+  useEffect(() => {
+    if (showFeedbackModal) {
+      getFeedbacksByMeetingId(meetingId).then((res) => {
+        setExistingFeedbacks(res.data);
+      });
+    }
+  }, [showFeedbackModal]);
 
   return (
     <>
@@ -61,6 +72,8 @@ export default function FeedbackModal({
                     <Attendees
                       attendees={attendees}
                       user={user}
+                      feedbacks={existingFeedbacks}
+                      meetingId={meetingId}
                       onClick={onClick}
                     />
                   )}
@@ -74,7 +87,7 @@ export default function FeedbackModal({
   );
 }
 
-function Attendees({ user, attendees, onClick }) {
+function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   return (
     <>
       <div className="mb-2">
@@ -115,9 +128,26 @@ function Attendees({ user, attendees, onClick }) {
                 type="button"
                 className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
                 onClick={() => onClick(attendee)}
-                disabled={attendee.email == user.email}
+                disabled={
+                  attendee.email == user.email ||
+                  feedbacks.filter(
+                    (feedback) =>
+                      feedback.meetingId == meetingId &&
+                      feedback.givenBy == user.email &&
+                      feedback.givenTo == attendee.email
+                  )
+                }
               >
-                {attendee.email == user.email ? "Self" : "Give Feedback"}
+                {attendee.email == user.email
+                  ? "Self"
+                  : feedbacks.filter(
+                      (feedback) =>
+                        feedback.meetingId == meetingId &&
+                        feedback.givenBy == user.email &&
+                        feedback.givenTo == attendee.email
+                    )
+                  ? "Submitted"
+                  : "Give Feedback"}
               </button>
             </div>
           </>
