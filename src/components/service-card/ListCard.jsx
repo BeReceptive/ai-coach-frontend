@@ -135,7 +135,7 @@ export default function ListCard() {
                     className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
                     onClick={() => {
                       setShowFeedbackModal(true);
-                      setSelectedMeetingId(meetingId);
+                      setSelectedMeetingId(discussion?.id);
                     }}>
                     Give Feedback
                   </button>
