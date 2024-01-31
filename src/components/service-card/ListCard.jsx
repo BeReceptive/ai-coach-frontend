@@ -51,6 +51,7 @@ export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
+  const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
   const { user } = useAuth0();
 
   useEffect(() => {
@@ -136,6 +137,7 @@ export default function ListCard() {
                     onClick={() => {
                       setShowFeedbackModal(true);
                       setSelectedMeetingId(discussion?.id);
+                      setSelectedMeetingAttendees(discussion.attendees);
                     }}
                   >
                     Give Feedback
@@ -150,7 +152,9 @@ export default function ListCard() {
       )}
       <FeedbackModal
         meetingId={selectedMeetingId}
+        attendees={selectedMeetingAttendees}
         showFeedbackModal={showFeedbackModal}
+        user={user}
         onClose={() => setShowFeedbackModal(false)}
       />
     </>

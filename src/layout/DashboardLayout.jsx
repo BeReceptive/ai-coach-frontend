@@ -6,10 +6,12 @@ import Footer from "../components/footer/Footer";
 import { Outlet, useNavigate } from "react-router";
 
 export default function DashboardLayout() {
-  const { user } = useAuth0();
+  const { isLoading, user } = useAuth0();
   const navigate = useNavigate();
   useEffect(() => {
-    navigate("/dashboard");
+    if (!isLoading) {
+      navigate("/dashboard");
+    }
   }, [user]);
 
   return (

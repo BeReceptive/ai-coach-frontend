@@ -5,6 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 export default function FeedbackModal({
   user,
   meetingId,
+  attendees,
   showFeedbackModal,
   onClose,
 }) {
@@ -42,7 +43,10 @@ export default function FeedbackModal({
                 leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <Dialog.Panel
+                  className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:p-6"
+                  style={{ width: "25%" }}
+                >
                   {showFeedbackForm ? (
                     <FeedbackForm
                       user={user}
@@ -55,18 +59,8 @@ export default function FeedbackModal({
                     />
                   ) : (
                     <Attendees
-                      attendees={[
-                        {
-                          id: "abc",
-                          name: "Uzair Riaz",
-                          email: "uzair@gmail.com",
-                        },
-                        {
-                          id: "def",
-                          name: "Another Attendee",
-                          email: "test@gmail.com",
-                        },
-                      ]}
+                      attendees={attendees}
+                      user={user}
                       onClick={onClick}
                     />
                   )}
@@ -80,7 +74,7 @@ export default function FeedbackModal({
   );
 }
 
-function Attendees({ attendees, onClick }) {
+function Attendees({ user, attendees, onClick }) {
   return (
     <>
       <div className="mb-2">
@@ -121,8 +115,9 @@ function Attendees({ attendees, onClick }) {
                 type="button"
                 className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
                 onClick={() => onClick(attendee)}
+                disabled={attendee.email == user.email}
               >
-                Give Feedback
+                {attendee.email == user.email ? "Self" : "Give Feedback"}
               </button>
             </div>
           </>
@@ -163,8 +158,8 @@ function FeedbackForm({ user, meetingId, attendee, onClose }) {
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
           onClick={() => {
             saveFeedback({
-              given_by: user.email,
-              given_to: attendee.email,
+              givenBy: user.email,
+              givenTo: attendee.email,
               meetingId,
               feedback,
             });
