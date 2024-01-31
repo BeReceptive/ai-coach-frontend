@@ -142,7 +142,7 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                         feedback.meetingId == meetingId &&
                         feedback.givenBy == user.email &&
                         feedback.givenTo == attendee.email
-                    )
+                    ).length > 0
                   }
                 >
                   {attendee.email == user.email
@@ -152,7 +152,7 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                           feedback.meetingId == meetingId &&
                           feedback.givenBy == user.email &&
                           feedback.givenTo == attendee.email
-                      )
+                      ).length > 0
                     ? "Submitted"
                     : "Give Feedback"}
                 </button>
