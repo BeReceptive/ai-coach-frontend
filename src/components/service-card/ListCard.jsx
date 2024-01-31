@@ -3,7 +3,7 @@ import "./cards.scss";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
-import FeedbackModal from "./FeedbackModal"
+import FeedbackModal from "./FeedbackModal";
 
 // const discussions = [
 //   {
@@ -136,7 +136,8 @@ export default function ListCard() {
                     onClick={() => {
                       setShowFeedbackModal(true);
                       setSelectedMeetingId(discussion?.id);
-                    }}>
+                    }}
+                  >
                     Give Feedback
                   </button>
                 </div>
@@ -147,7 +148,12 @@ export default function ListCard() {
       ) : (
         ""
       )}
-      {showFeedbackModal && <FeedbackModal meetingId={selectedMeetingId} onClose={() => setShowFeedbackModal(false)} />}
+      {showFeedbackModal && (
+        <FeedbackModal
+          meetingId={selectedMeetingId}
+          onClose={() => setShowFeedbackModal(false)}
+        />
+      )}
     </>
   );
 }
