@@ -55,10 +55,17 @@ export default function FeedbackModal({
                     />
                   ) : (
                     <Attendees
-                      {/* Fetch attendees using API */}
                       attendees={[
-                        { id: "abc", name: "Uzair Riaz", email: "uzair@gmail.com" },
-                        { id: "def", name: "Another Attendee", email: "test@gmail.com" },
+                        {
+                          id: "abc",
+                          name: "Uzair Riaz",
+                          email: "uzair@gmail.com",
+                        },
+                        {
+                          id: "def",
+                          name: "Another Attendee",
+                          email: "test@gmail.com",
+                        },
                       ]}
                       onClick={onClick}
                     />
