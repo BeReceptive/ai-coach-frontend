@@ -1,7 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import SignoutButton from "./SignoutButton";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
+import SignoutButton from "./SignoutButton";
+import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
+import { saveUser } from "../../services/user.service";
 import LogoIcon from "../../assets/icons/defaultIcons";
 import logoText from "../../assets/images/AI-Clarity.png";
 
@@ -21,7 +25,64 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+// http://localhost:8000/api/google-calendar/redirect
 export default function Header() {
+  const { user } = useAuth0();
+
+  useEffect(() => {
+    // save user to db
+    const saveUserToDB = async () => {
+      const savedUser = {
+        name: user?.name,
+        email: user?.email,
+        imageUrl: user?.picture,
+      };
+      if (user) {
+        const res = await saveUser(savedUser);
+        console.log("res: ", res, user);
+      }
+    };
+    saveUserToDB();
+  }, [user]);
+
+  const handleIntegrationWithGoogleCalendar = async () => {
+    var SCOPES = "https://www.googleapis.com/auth/calendar";
+    const client = window.google.accounts.oauth2.initCodeClient({
+      client_id: process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID, //your client id created in cloud console,
+      scope: SCOPES,
+      ux_mode: "popup",
+      callback: async (response) => {
+        try {
+          if (!response.code) {
+            return;
+          }
+
+          console.log("reponseeee: ", response, response.code);
+          const params = {
+            code: response?.code,
+            userEmail: user?.email
+          };
+
+          const res = await GetGoogleCalendarEvents(params);
+          console.log("responseeee: ", res);
+
+          //sending the code to backend nodejs express
+          // fetch("/storerefresktoken", {
+          //   method: "post",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: {
+          //     code: response.code,
+          //   },
+          // })
+          //   .then((response) => response.json())
+          //   .then((data) => console.log("success"));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    });
+    client.requestCode();
+  };
   return (
     <div className={"top-bar"}>
       <Disclosure as="nav" className="">
@@ -54,7 +115,7 @@ export default function Header() {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={user.imageUrl}
+                            src={user?.imageUrl}
                             alt=""
                           />
                         </Menu.Button>
@@ -110,16 +171,16 @@ export default function Header() {
                   <div className="flex-shrink-0">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={user.imageUrl}
+                      src={user?.imageUrl}
                       alt=""
                     />
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium leading-none text-white">
-                      {user.name}
+                      {user?.name}
                     </div>
                     <div className="text-sm font-medium leading-none text-gray-400">
-                      {user.email}
+                      {user?.email}
                     </div>
                   </div>
                   <button
@@ -160,6 +221,12 @@ export default function Header() {
               </div>
               <div className="mt-2 flex items-center text-md text-white font-semibold">
                 Coach Insights
+              </div>
+              <div
+                onClick={handleIntegrationWithGoogleCalendar}
+                className="mt-2 flex items-center text-md text-white font-semibold"
+              >
+                Integrate with Google Calendar
               </div>
             </div>
           </div>

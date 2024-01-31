@@ -35,7 +35,7 @@ function RouteConfig() {
         }}
       >
       <Routes>
-        <Route element={<DashboardLayout></DashboardLayout>}>
+        <Route path="/" element={<DashboardLayout></DashboardLayout>}>
         <Route
             path='/dashboard'
             element={<PrivateRoute component={DashboardView} />}

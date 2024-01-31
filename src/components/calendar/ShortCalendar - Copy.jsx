@@ -1,8 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import "./calandar.scss";
-import { eachDayOfInterval, endOfMonth, endOfWeek, format, isEqual, isSameDay, isSameMonth, isToday, parseISO, startOfDay, startOfMonth, startOfWeek } from "date-fns";
-import { useState } from "react";
-
 
 const days = [
   { date: "2021-12-27" },
@@ -54,20 +51,6 @@ function classNames(...classes) {
 }
 
 export default function ShortCalendar() {
-  const today = startOfDay(new Date());
-  const [selectedDay, setSelectedDay] = useState(today);
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-
-  const newDays = eachDayOfInterval({
-    start: startOfWeek(startOfMonth(today)),
-    end: endOfWeek(endOfMonth(today)),
-  });
-  console.log("newDays: ", newDays);
-
   return (
     <div className={"short-calendar-card rounded-2xl"}>
       <div className="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
@@ -79,7 +62,7 @@ export default function ShortCalendar() {
             <span className="sr-only">Previous month</span>
             <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
           </button>
-          <div className="flex-auto text-sm font-semibold">{format(today, 'MMM yyyy')}</div>
+          <div className="flex-auto text-sm font-semibold">January</div>
           <button
             type="button"
             className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
@@ -89,49 +72,48 @@ export default function ShortCalendar() {
           </button>
         </div>
         <div className="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
-          <div>S</div>
           <div>M</div>
           <div>T</div>
           <div>W</div>
           <div>T</div>
           <div>F</div>
           <div>S</div>
+          <div>S</div>
         </div>
         <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-          {newDays.map((day, dayIdx) => (
+          {days.map((day, dayIdx) => (
             <button
-              key={day?.toString()}
-              onClick={() => setSelectedDay(day)}
+              key={day.date}
               type="button"
               className={classNames(
                 "py-1.5 hover:bg-gray-100 focus:z-10",
-                isSameMonth(day, today) ? "bg-white" : "bg-gray-50",
-                (isEqual(day, selectedDay) || isToday(day)) && "font-semibold",
-                isEqual(day, selectedDay) && "text-indigo-800",
-                !isEqual(day, selectedDay) &&
-                  isSameMonth(day, today) &&
-                  !isToday(day) &&
+                day.isCurrentMonth ? "bg-white" : "bg-gray-50",
+                (day.isSelected || day.isToday) && "font-semibold",
+                day.isSelected && "text-white",
+                !day.isSelected &&
+                  day.isCurrentMonth &&
+                  !day.isToday &&
                   "text-gray-900",
-                !isEqual(day, selectedDay) &&
-                  !isSameMonth(day, today) &&
-                  !isToday(day) &&
+                !day.isSelected &&
+                  !day.isCurrentMonth &&
+                  !day.isToday &&
                   "text-gray-400",
-                isToday(day) && !isEqual(day, selectedDay) && "text-indigo-600",
+                day.isToday && !day.isSelected && "text-indigo-600",
                 dayIdx === 0 && "rounded-tl-lg",
                 dayIdx === 6 && "rounded-tr-lg",
-                dayIdx === newDays.length - 7 && "rounded-bl-lg",
-                dayIdx === newDays.length - 1 && "rounded-br-lg"
+                dayIdx === days.length - 7 && "rounded-bl-lg",
+                dayIdx === days.length - 1 && "rounded-br-lg"
               )}
             >
               <time
-                dateTime={format(day, "yyyy-MM-dd")}
+                dateTime={day.date}
                 className={classNames(
                   "mx-auto flex h-7 w-7 items-center justify-center rounded-full",
-                  isEqual(day, selectedDay) && isToday(day) && "bg-custom-blue-600",
-                  isEqual(day, selectedDay) && !isToday(day) && "bg-custom-blue"
+                  day.isSelected && day.isToday && "bg-custom-blue-600",
+                  day.isSelected && !day.isToday && "bg-custom-blue"
                 )}
               >
-                {format(day, "d")}
+                {day.date.split("-").pop().replace(/^0/, "")}
               </time>
             </button>
           ))}
