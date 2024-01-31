@@ -54,23 +54,23 @@ export default function ListCard() {
   const { user } = useAuth0();
 
   useEffect(() => {
-  const getPastMeetings = async () => {
-  const currentDate = new Date();
-  const oneWeekAgo = new Date(
-  currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
-  );
-  const threeHoursAgo = new Date(
-  currentDate.getTime() - 1 * 60 * 60 * 1000
-  );
-  const params = {
-  userEmail: user?.email,
-  timeMin: oneWeekAgo.toISOString(),
-  timeMax: threeHoursAgo.toISOString(),
-  };
-  const response = await GetGoogleCalendarEvents(params);
-  setPastMeetings(response?.data?.data);
-  };
-  getPastMeetings();
+    const getPastMeetings = async () => {
+      const currentDate = new Date();
+      const oneWeekAgo = new Date(
+        currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
+      );
+      const threeHoursAgo = new Date(
+        currentDate.getTime() - 1 * 60 * 60 * 1000
+      );
+      const params = {
+        userEmail: user?.email,
+        timeMin: oneWeekAgo.toISOString(),
+        timeMax: threeHoursAgo.toISOString(),
+      };
+      const response = await GetGoogleCalendarEvents(params);
+      setPastMeetings(response?.data?.data);
+    };
+    getPastMeetings();
   }, [user]);
 
   return (
@@ -148,12 +148,11 @@ export default function ListCard() {
       ) : (
         ""
       )}
-      {showFeedbackModal && (
-        <FeedbackModal
-          meetingId={selectedMeetingId}
-          onClose={() => setShowFeedbackModal(false)}
-        />
-      )}
+      <FeedbackModal
+        meetingId={selectedMeetingId}
+        showFeedbackModal={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+      />
     </>
   );
 }
