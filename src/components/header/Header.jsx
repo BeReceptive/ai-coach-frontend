@@ -217,9 +217,6 @@ export default function Header() {
                 Dashboard
               </div>
               <div className="mt-2 flex items-center text-md text-white font-semibold">
-                Meetings
-              </div>
-              <div className="mt-2 flex items-center text-md text-white font-semibold">
                 Coach Insights
               </div>
               <div

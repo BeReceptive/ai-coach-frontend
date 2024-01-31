@@ -73,6 +73,10 @@ export default function ListCard() {
     };
     getPastMeetings();
   }, [user]);
+  const today = new Date();
+  const month = today.toLocaleString("default", { month: "long" });
+  const day = today.toLocaleDateString("default", { day: "numeric" });
+  const year = today.getFullYear();
 
   return (
     <>
@@ -111,7 +115,7 @@ export default function ListCard() {
                   />
                   <p>
                     <time dateTime={discussion?.end?.dateTime}>
-                      {"Closing on January 7, 2020"}
+                      {`Closing on ${month} ${day}, ${year}`}
                     </time>
                   </p>
                 </div>

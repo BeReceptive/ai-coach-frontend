@@ -1,21 +1,38 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import ShortCalendar from "../../components/calendar/ShortCalendar";
 import ServiceCard from "../../components/service-card/ServiceCard";
 import ListCard from "../../components/service-card/ListCard";
 import CalendarS from "../../components/calendar/CalendarS";
+import CalendarDayPilot from "../../components/calendar/CalendarDayPilot";
+import { useAuth0 } from "@auth0/auth0-react";
+import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 
 export default function DashboardView() {
+  const [events, setEvents] = useState([]);
+  const { user } = useAuth0();
+  useEffect(() => {
+    const getEvents = async () => {
+      const now = new Date();
+      const firstDayOfWeek = new Date(
+        now.setDate(now.getDate() - now.getDay())
+      );
+      const lastDayOfWeek = new Date(firstDayOfWeek);
+      lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+      const response = await GetGoogleCalendarEvents({
+        userEmail: user?.email,
+        timeMin: firstDayOfWeek.toISOString(),
+        timeMax: lastDayOfWeek.toISOString(),
+      });
+      setEvents(response?.data?.data);
+    };
+    getEvents();
+  }, []);
   return (
     <div>
       <div className="container mx-auto">
         <div className="flex gap-10">
-          <div className="w-8/12">
-            <CalendarS />
-          </div>
-
-          <div className="w-4/12">
-            <ShortCalendar />
+          <div>
+            <CalendarDayPilot events={events} />
           </div>
         </div>
       </div>

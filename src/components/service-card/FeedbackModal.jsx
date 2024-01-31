@@ -89,7 +89,6 @@ export default function FeedbackModal({
 
 function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   const [search, setSearch] = useState(null);
-  console.log(attendees);
   return (
     <>
       <div className="mb-2">
