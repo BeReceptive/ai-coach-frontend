@@ -29,6 +29,9 @@ function classNames(...classes) {
 export default function Header() {
   const { user } = useAuth0();
 
+  const code = new URLSearchParams(window.location.search).get('code');
+  console.log("code: ", code)
+
   useEffect(() => {
     // save user to db
     const saveUserToDB = async () => {
@@ -50,7 +53,19 @@ export default function Header() {
     const client = window.google.accounts.oauth2.initCodeClient({
       client_id: process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID, //your client id created in cloud console,
       scope: SCOPES,
-      ux_mode: "popup",
+      // ux_mode: "popup",
+      ux_mode: "redirect", // Use "redirect" instead of "popup"
+      redirect_uri: `${window.location.origin}/dashboard`, // Set your redirect URI
+      on_success: async (response) => {
+        try {
+          if (!response.code) {
+            return;
+          }
+          console.log("reponseeee: ", response, response.code)
+        } catch (error) {
+          console.log("error", error);
+        }
+      },
       callback: async (response) => {
         try {
           if (!response.code) {
@@ -60,24 +75,13 @@ export default function Header() {
           console.log("reponseeee: ", response, response.code);
           const params = {
             code: response?.code,
-            userEmail: user?.email
+            userEmail: user?.email,
           };
 
           const res = await GetGoogleCalendarEvents(params);
           console.log("responseeee: ", res);
-
-          //sending the code to backend nodejs express
-          // fetch("/storerefresktoken", {
-          //   method: "post",
-          //   headers: { "Content-Type": "application/json" },
-          //   body: {
-          //     code: response.code,
-          //   },
-          // })
-          //   .then((response) => response.json())
-          //   .then((data) => console.log("success"));
         } catch (error) {
-          console.log(error);
+          console.log("error", error);
         }
       },
     });
