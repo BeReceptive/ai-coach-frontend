@@ -5,50 +5,47 @@ import { useEffect, useState } from "react";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import FeedbackModal from "./FeedbackModal";
 
-// const discussions = [
-//   {
-//     id: 1,
-//     summary: "Back End Developer in Engineering",
-//     position: "in Engineering",
-//     hangoutLink: "#",
-//     date: "Closing on January 7, 2020",
-//     end: {
-//       dateTime: "2023-01-23T22:34Z",
-//     },
-//     status: "active",
-//     attendees: [
-//       {
-//         id: 12,
-//         name: "Emma Dorsey",
-//         imageUrl:
-//           "https://images.unsplash.com/photo-1505840717430-882ce147ef2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     summary: "Back End Developer in Engineering",
-//     position: "in Engineering",
-//     hangoutLink: "#",
-//     date: "Closing on January 7, 2020",
-//     end: {
-//       dateTime: "2023-01-24T10:00:00Z",
-//     },
-//     dateTime: "2023-01-23T19:20Z",
-//     status: "active",
-//     attendees: [
-//       {
-//         id: 13,
-//         email: "Alicia Bell",
-//         imageUrl:
-//           "https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-//       },
-//     ],
-//   },
-// ];
+const pastMeetings = [
+  {
+    id: "1",
+    summary: "Discussing the new project Software Engineer",
+    position: "Software Engineer",
+    attendees: [
+      {
+        name: "Jane Cooper",
+        email: "jane@gmail.com",
+      },
+      {
+        name: "Jane Cooper",
+        email: "a@gmail.com",
+      },
+    ],
+    end: {
+      dateTime: "2021-07-01T17:00:00+05:30",
+    },
+  },
+  {
+    id: "2",
+    summary: "Discussing the new project Software Engineer",
+    position: "Software Engineer",
+    attendees: [
+      {
+        name: "Jane Cooper",
+        email: "abc@gmail.com",
+      },
+      {
+        name: "Jane Cooper",
+        email: "a@gmail.com",
+      },
+    ],
+    end: {
+      dateTime: "2021-07-01T17:00:00+05:30",
+    },
+  },
+];
 
 export default function ListCard() {
-  const [pastMeetings, setPastMeetings] = useState([]);
+  // const [pastMeetings, setPastMeetings] = useState([]);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
@@ -69,9 +66,9 @@ export default function ListCard() {
         timeMax: threeHoursAgo.toISOString(),
       };
       const response = await GetGoogleCalendarEvents(params);
-      setPastMeetings(response?.data?.data);
+      // setPastMeetings(response?.data?.data);
     };
-    getPastMeetings();
+    // getPastMeetings();
   }, [user]);
   const today = new Date();
   const month = today.toLocaleString("default", { month: "long" });

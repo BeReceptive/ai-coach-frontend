@@ -19,13 +19,13 @@ export default function FeedbackModal({
     setShowFeedbackForm(true);
     setSelectedAttendee(attendee);
   };
-  useEffect(() => {
-    if (showFeedbackModal) {
-      getFeedbacksByMeetingId(meetingId).then((res) => {
-        setExistingFeedbacks(res.data);
-      });
-    }
-  }, [showFeedbackModal]);
+  // useEffect(() => {
+  //   if (showFeedbackModal) {
+  //     getFeedbacksByMeetingId(meetingId).then((res) => {
+  //       setExistingFeedbacks(res.data);
+  //     });
+  //   }
+  // }, [showFeedbackModal]);
 
   return (
     <>

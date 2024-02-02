@@ -45,7 +45,7 @@ export default function Header() {
         console.log("res: ", res, user);
       }
     };
-    saveUserToDB();
+    // saveUserToDB();
   }, [user]);
 
   const handleIntegrationWithGoogleCalendar = async () => {
@@ -224,7 +224,9 @@ export default function Header() {
                 Coach Insights
               </div>
               <div
-                onClick={handleIntegrationWithGoogleCalendar}
+                // onClick={
+                  // handleIntegrationWithGoogleCalendar
+                // }
                 className="mt-2 flex items-center text-md text-white font-semibold"
               >
                 Integrate with Google Calendar

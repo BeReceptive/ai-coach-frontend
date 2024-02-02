@@ -29,7 +29,7 @@ export default function DashboardView() {
           redirectToGoogleAuth();
         }
       };
-      CheckUserStatus(user?.email);
+      // CheckUserStatus(user?.email);
     }
   }, []);
 
@@ -65,7 +65,7 @@ export default function DashboardView() {
         setEvents(response?.data?.data);
       }
     };
-    getEvents();
+    // getEvents();
   }, [isLoading]);
   return (
     <div>
