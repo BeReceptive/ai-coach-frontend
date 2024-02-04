@@ -1,13 +1,14 @@
-import React, { Fragment, useEffect } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { useAuth0 } from "@auth0/auth0-react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import React, {Fragment, useEffect} from "react";
+import {Disclosure, Menu, Transition} from "@headlessui/react";
+import {useAuth0} from "@auth0/auth0-react";
+import {Bars3Icon, BellIcon, XMarkIcon} from "@heroicons/react/24/outline";
 
 import SignoutButton from "./SignoutButton";
-import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
-import { saveUser } from "../../services/user.service";
+import {GetGoogleCalendarEvents} from "../../services/googleCalendar.service";
+import {saveUser} from "../../services/user.service";
 import LogoIcon from "../../assets/icons/defaultIcons";
 import logoText from "../../assets/images/AI-Clarity.png";
+import userIcon from "../../assets/images/user.png"
 
 const user = {
   name: "Tom Cook",
@@ -119,7 +120,7 @@ export default function Header() {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={user?.imageUrl}
+                            src={user?.imageUrl ? user?.imageUrl : userIcon}
                             alt=""
                           />
                         </Menu.Button>

@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import FeedbackModal from "./FeedbackModal";
+import userIcon from "../../assets/images/user.png"
 
 const pastMeetings = [
   {
@@ -126,7 +127,7 @@ export default function ListCard() {
                         <img
                           className="h-6 w-6 rounded-full bg-gray-50 ring-2 ring-white"
                           src={
-                            "https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            userIcon
                           }
                           alt={attendee?.email}
                         />
