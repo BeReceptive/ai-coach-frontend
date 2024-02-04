@@ -25,12 +25,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-// http://localhost:8000/api/google-calendar/redirect
 export default function Header() {
   const { user } = useAuth0();
 
   const code = new URLSearchParams(window.location.search).get('code');
-  console.log("code: ", code)
 
   useEffect(() => {
     // save user to db
@@ -42,51 +40,17 @@ export default function Header() {
       };
       if (user) {
         const res = await saveUser(savedUser);
-        console.log("res: ", res, user);
       }
     };
     saveUserToDB();
   }, [user]);
 
-  const handleIntegrationWithGoogleCalendar = async () => {
-    var SCOPES = "https://www.googleapis.com/auth/calendar";
-    const client = window.google.accounts.oauth2.initCodeClient({
-      client_id: process.env.REACT_APP_GOOGLE_CALENDAR_CLIENT_ID, //your client id created in cloud console,
-      scope: SCOPES,
-      // ux_mode: "popup",
-      ux_mode: "redirect", // Use "redirect" instead of "popup"
-      redirect_uri: `${window.location.origin}/dashboard`, // Set your redirect URI
-      on_success: async (response) => {
-        try {
-          if (!response.code) {
-            return;
-          }
-          console.log("reponseeee: ", response, response.code)
-        } catch (error) {
-          console.log("error", error);
-        }
-      },
-      callback: async (response) => {
-        try {
-          if (!response.code) {
-            return;
-          }
+  const handleIntegrationWithMicrosoftCalendar = async () => {
+    // const res = await GetGoogleCalendarEvents();
+    // console.log(res);
+    window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3e0f1c6c-0c9d-4f8c-8f6c-6e7c7e4b3f9c&response_type=code&redirect_uri=http://localhost:3000&response_mode=query&scope=openid%20offline_access%20profile%20email%20https://graph.microsoft.com/calendars.read%20https://graph.microsoft.com/calendars.read.shared%20https://graph.microsoft.com/calendars.readwrite%20https://graph.microsoft.com/calendars.readwrite.shared%20https://graph.microsoft.com/User.Read&state=12345`;
+  }
 
-          console.log("reponseeee: ", response, response.code);
-          const params = {
-            code: response?.code,
-            userEmail: user?.email,
-          };
-
-          const res = await GetGoogleCalendarEvents(params);
-          console.log("responseeee: ", res);
-        } catch (error) {
-          console.log("error", error);
-        }
-      },
-    });
-    client.requestCode();
-  };
   return (
     <div className={"top-bar"}>
       <Disclosure as="nav" className="">
@@ -224,10 +188,10 @@ export default function Header() {
                 Coach Insights
               </div>
               <div
-                onClick={handleIntegrationWithGoogleCalendar}
+                onClick={handleIntegrationWithMicrosoftCalendar}
                 className="mt-2 flex items-center text-md text-white font-semibold"
               >
-                Integrate with Google Calendar
+                Integrate with Microsoft Calendar
               </div>
             </div>
           </div>

@@ -6,7 +6,7 @@ export const saveFeedback = async (feedback) => {
   return response;
 };
 
-export const getFeedbacksByMeetingId = async (meetingId) => {
-  const response = await GET(`${apiUrl.feedback}?meetingId=${meetingId}`);
+export const getFeedbacksByQuery = async (params) => {
+  const response = await GET(`${apiUrl.feedback}`, params);
   return response;
 };

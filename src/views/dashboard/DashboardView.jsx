@@ -12,8 +12,6 @@ export default function DashboardView() {
   const [events, setEvents] = useState([]);
   const { isLoading, user } = useAuth0();
 
-  console.log("user", user);
-
   useEffect(() => {
     if (user?.sub?.includes("google-oauth2")) {
       // check if user has google access token

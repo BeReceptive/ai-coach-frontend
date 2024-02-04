@@ -1,6 +1,6 @@
 import {
   saveFeedback,
-  getFeedbacksByMeetingId,
+  getFeedbacksByQuery,
 } from "../../services/feedback.service";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -21,9 +21,14 @@ export default function FeedbackModal({
   };
   useEffect(() => {
     if (showFeedbackModal) {
-      getFeedbacksByMeetingId(meetingId).then((res) => {
-        setExistingFeedbacks(res.data);
-      });
+      const getFeedbacks = async () => {
+        const feedbackParams = {
+          meetingId,
+        };
+        const response = await getFeedbacksByQuery(feedbackParams);
+        setExistingFeedbacks(response.data);
+      };
+      getFeedbacks();
     }
   }, [showFeedbackModal]);
 
@@ -125,8 +130,8 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                   />
                 </div>
                 <div className="flex-col text-sm font-medium">
-                  <div>{attendee.name}</div>
-                  <div>{attendee.email}</div>
+                  <div>{attendee?.name}</div>
+                  <div>{attendee?.email}</div>
                 </div>
               </div>
               <div className="w-25 gap-x-2.5 justify-self-end self-center">
@@ -194,8 +199,8 @@ function FeedbackForm({ user, meetingId, attendee, onClose }) {
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
           onClick={() => {
             saveFeedback({
-              givenBy: user.email,
-              givenTo: attendee.email,
+              givenBy: attendee.email, //user.email,
+              givenTo: user.email, //attendee.email,
               meetingId,
               feedback,
             });

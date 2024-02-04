@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import {
   CodeBracketIcon,
@@ -6,44 +6,85 @@ import {
   FlagIcon,
   StarIcon,
 } from "@heroicons/react/20/solid";
+import { useAuth0 } from "@auth0/auth0-react";
+import { getFeedbacksByQuery } from "../../services/feedback.service";
+import moment from "moment";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ServiceCard() {
-  return (
-    <div className="bg-white px-4 py-5 sm:px-6">
-      <div className="flex space-x-3">
-        <div className="flex-shrink-0">
-          <img
-            className="h-10 w-10 rounded-full"
-            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            alt=""
-          />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-gray-900 text-left">
-            <a href="#" className="hover:underline">
-              Chelsea Hagon
-            </a>
-          </p>
-          <p className="text-sm text-gray-500 text-left">
-            <a href="#" className="hover:underline">
-              December 9 at 11:43 AM
-            </a>
-          </p>
-        </div>
-        <div className="flex flex-shrink-0 self-center">
-          <Menu as="div" className="relative inline-block text-left">
-            <div>
-              <Menu.Button className="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600">
-                <span className="sr-only">Open options</span>
-                <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
-              </Menu.Button>
-            </div>
+  const { user } = useAuth0();
+  const [feedbacks, setFeedbacks] = useState([]);
 
-            <Transition
+  useEffect(() => {
+    const getFeedbacks = async () => {
+      const feedbackParams = {
+        givenTo: user?.email,
+      };
+      const response = await getFeedbacksByQuery(feedbackParams);
+      setFeedbacks(response.data);
+    };
+    getFeedbacks();
+  }, []);
+
+  const formatDate = (originalDateString) => {
+    const date = new Date(originalDateString);
+    const options = {
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: "UTC",
+    };
+    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+      date
+    );
+    return formattedDate;
+  };
+
+  return (
+    <>
+      {feedbacks.length > 0 ? (
+        <>
+          {feedbacks.map((feedback) => (
+            <div className="bg-white px-4 py-5 sm:px-6">
+              <div className="flex space-x-3">
+                <div className="flex-shrink-0">
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    // src="https://lh3.googleusercontent.com/a/ACg8ocJ3rX6wLtgIMoFewITVTi8dIJE58Hp0_gFsH9Q7r2nY=s96-c"
+                    src={feedback?.givenToUser?.imageUrl || ""} //"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt=""
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-gray-900 text-left">
+                    <a href="#" className="hover:underline">
+                      {feedback?.givenToUser?.name || feedback?.givenBy}
+                    </a>
+                  </p>
+                  <p className="text-sm text-gray-500 text-left">
+                    <a href="#" className="hover:underline">
+                      {formatDate(feedback?.createdAt)}
+                    </a>
+                  </p>
+                </div>
+                <div className="flex flex-shrink-0 self-center">
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <Menu.Button className="-m-2 flex items-center rounded-full p-2 text-gray-400 hover:text-gray-600">
+                        <span className="sr-only">Open options</span>
+                        <EllipsisVerticalIcon
+                          className="h-5 w-5"
+                          aria-hidden="true"
+                        />
+                      </Menu.Button>
+                    </div>
+
+                    {/* <Transition
               as={Fragment}
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
@@ -113,20 +154,21 @@ export default function ServiceCard() {
                   </Menu.Item>
                 </div>
               </Menu.Items>
-            </Transition>
-          </Menu>
-        </div>
-      </div>
-      <div>
-        <p className={"text-gray-400 text-base text-left mt-3"}>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illo impedit
-          sapiente recusandae iusto officiis dolor? Laborum quibusdam quam,
-          quidem vel assumenda repellat inventore sint nesciunt, ullam
-          asperiores magnam placeat eveniet. Aliquam voluptatibus assumenda
-          distinctio veniam quam tempora modi aperiam nemo voluptate
-          reprehenderit quidem, nisi vero est.
-        </p>
-      </div>
-    </div>
+            </Transition> */}
+                  </Menu>
+                </div>
+              </div>
+              <div>
+                <p className={"text-gray-400 text-base text-left mt-3"}>
+                  {feedback?.gptFeedback || feedback?.feedback}
+                </p>
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        ""
+      )}
+    </>
   );
 }

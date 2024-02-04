@@ -21,7 +21,12 @@ const CalendarDayPilot = ({ events }) => {
     [events]
   );
 
-  return <DayPilotCalendar {...config} ref={calendarRef} />;
+  return (
+    <>
+      {console.log("eventssss: ", config, events)}
+      <DayPilotCalendar {...config} ref={calendarRef} />
+    </>
+  );
 };
 
 export default CalendarDayPilot;
