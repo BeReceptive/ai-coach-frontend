@@ -57,14 +57,14 @@ export default function ServiceCard() {
                   <img
                     className="h-10 w-10 rounded-full"
                     // src="https://lh3.googleusercontent.com/a/ACg8ocJ3rX6wLtgIMoFewITVTi8dIJE58Hp0_gFsH9Q7r2nY=s96-c"
-                    src={feedback?.givenToUser?.imageUrl || ""} //"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={feedback?.givenByUser?.imageUrl || userIcon} //"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                     alt=""
                   />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-gray-900 text-left">
                     <a href="#" className="hover:underline">
-                      {feedback?.givenToUser?.name || feedback?.givenBy}
+                      {feedback?.givenByUser?.name || feedback?.givenBy}
                     </a>
                   </p>
                   <p className="text-sm text-gray-500 text-left">

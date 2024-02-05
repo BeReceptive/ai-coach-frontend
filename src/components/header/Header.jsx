@@ -43,13 +43,13 @@ export default function Header() {
         const res = await saveUser(savedUser);
       }
     };
-    // saveUserToDB();
+    saveUserToDB();
   }, [user]);
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
     // const res = await GetGoogleCalendarEvents();
     // console.log(res);
-    window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3e0f1c6c-0c9d-4f8c-8f6c-6e7c7e4b3f9c&response_type=code&redirect_uri=http://localhost:3000&response_mode=query&scope=openid%20offline_access%20profile%20email%20https://graph.microsoft.com/calendars.read%20https://graph.microsoft.com/calendars.read.shared%20https://graph.microsoft.com/calendars.readwrite%20https://graph.microsoft.com/calendars.readwrite.shared%20https://graph.microsoft.com/User.Read&state=12345`;
+    // window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3e0f1c6c-0c9d-4f8c-8f6c-6e7c7e4b3f9c&response_type=code&redirect_uri=http://localhost:3000&response_mode=query&scope=openid%20offline_access%20profile%20email%20https://graph.microsoft.com/calendars.read%20https://graph.microsoft.com/calendars.read.shared%20https://graph.microsoft.com/calendars.readwrite%20https://graph.microsoft.com/calendars.readwrite.shared%20https://graph.microsoft.com/User.Read&state=12345`;
   }
 
   return (
@@ -82,9 +82,9 @@ export default function Header() {
                         <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">Open user menu</span>
-                          <img
+                                                    <img
                             className="h-8 w-8 rounded-full"
-                            src={user?.imageUrl ? user?.imageUrl : userIcon}
+                            src={user?.picture ? user?.picture : userIcon}
                             alt=""
                           />
                         </Menu.Button>
@@ -140,7 +140,7 @@ export default function Header() {
                   <div className="flex-shrink-0">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={user?.imageUrl}
+                      src={user?.picture || userIcon}
                       alt=""
                     />
                   </div>

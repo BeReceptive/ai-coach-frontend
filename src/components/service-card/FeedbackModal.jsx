@@ -203,8 +203,8 @@ function FeedbackForm({ user, meetingId, attendee, onClose }) {
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
           onClick={() => {
             saveFeedback({
-              givenBy: attendee.email, //user.email,
-              givenTo: user.email, //attendee.email,
+              givenBy: user.email,
+              givenTo: attendee.email,
               meetingId,
               feedback,
             });
