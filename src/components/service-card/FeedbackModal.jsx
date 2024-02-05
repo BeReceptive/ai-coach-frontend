@@ -4,6 +4,8 @@ import {
 } from "../../services/feedback.service";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import "./feedback-modal.scss"
+import userIcon from "../../assets/images/user.png"
 
 export default function FeedbackModal({
   user,
@@ -96,7 +98,9 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   const [search, setSearch] = useState(null);
   return (
     <>
-      <div className="mb-2">
+      <div className="mb-2 attendees">
+        <h3 className={'sub-heading'}>Profile</h3>
+        <p className={'des'}>This information will be displayed publicy</p>
         <label
           htmlFor="name"
           className="block text-sm font-medium leading-6 text-gray-900"
@@ -108,36 +112,36 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
             type="name"
             name="name"
             id="name"
-            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="text-field block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             placeholder="Enter name"
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="attendees-list flex flex-col gap-1">
         {attendees
           .filter(
             (attendee) => search == null || attendee.email.includes(search)
           )
           .map((attendee) => (
-            <>
-              <div className="flex">
+              <div className={'attendees-card flex align-center justify-between'}>
+                <div className="flex items-center">
                 <div className="px-2">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={userIcon}
                     alt=""
                   />
                 </div>
                 <div className="flex-col text-sm font-medium">
-                  <div>{attendee?.name}</div>
-                  <div>{attendee?.email}</div>
+                  <h3>{attendee?.name}</h3>
+                  <p>{attendee?.email}</p>
                 </div>
               </div>
               <div className="w-25 gap-x-2.5 justify-self-end self-center">
                 <button
-                  type="button"
-                  className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                    type="button"
+                    className="theme-btn-round px-2 py-1 text-sm "
                   onClick={() => onClick(attendee)}
                   disabled={
                     attendee.email == user.email ||
@@ -161,7 +165,7 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                     : "Give Feedback"}
                 </button>
               </div>
-            </>
+              </div>
           ))}
       </div>
     </>
@@ -171,22 +175,22 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
 function FeedbackForm({ user, meetingId, attendee, onClose }) {
   const [feedback, setFeedback] = useState(null);
   return (
-    <>
+      <div className={'feedback-form'}>
       <div className="flex">
         <div className="px-2">
           <img
             className="h-10 w-10 rounded-full"
-            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            src={userIcon}
             alt=""
           />
         </div>
         <div className="flex-auto">
           <div>{attendee.name}</div>
           <textarea
-            rows={4}
+              rows={14}
             name="feedback"
             id="feedback"
-            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="text-field block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             defaultValue={""}
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Give your feedback"
@@ -217,6 +221,6 @@ function FeedbackForm({ user, meetingId, attendee, onClose }) {
           Cancel
         </button>
       </div>
-    </>
+    </div>
   );
 }

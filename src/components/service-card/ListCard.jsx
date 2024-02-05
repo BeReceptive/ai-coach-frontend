@@ -4,9 +4,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import FeedbackModal from "./FeedbackModal";
+import userIcon from "../../assets/images/user.png"
 
 export default function ListCard() {
-  const [pastMeetings, setPastMeetings] = useState([]);
+  // const [pastMeetings, setPastMeetings] = useState([]);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
@@ -27,9 +28,9 @@ export default function ListCard() {
         timeMax: threeHoursAgo.toISOString(),
       };
       const response = await GetGoogleCalendarEvents(params);
-      setPastMeetings(response?.data?.data);
+      // setPastMeetings(response?.data?.data);
     };
-    getPastMeetings();
+    // getPastMeetings();
   }, [user]);
   const today = new Date();
   const month = today.toLocaleString("default", { month: "long" });
@@ -87,7 +88,7 @@ export default function ListCard() {
                         <img
                           className="h-6 w-6 rounded-full bg-gray-50 ring-2 ring-white"
                           src={
-                            "https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            userIcon
                           }
                           alt={attendee?.email}
                         />

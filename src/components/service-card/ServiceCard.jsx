@@ -9,6 +9,7 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 import { getFeedbacksByQuery } from "../../services/feedback.service";
 import moment from "moment";
+import userIcon from "../../assets/images/user.png";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
