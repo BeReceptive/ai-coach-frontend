@@ -7,7 +7,7 @@ import FeedbackModal from "./FeedbackModal";
 import userIcon from "../../assets/images/user.png"
 
 export default function ListCard() {
-  // const [pastMeetings, setPastMeetings] = useState([]);
+  const [pastMeetings, setPastMeetings] = useState([]);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
@@ -28,9 +28,9 @@ export default function ListCard() {
         timeMax: threeHoursAgo.toISOString(),
       };
       const response = await GetGoogleCalendarEvents(params);
-      // setPastMeetings(response?.data?.data);
+      setPastMeetings(response?.data?.data);
     };
-    // getPastMeetings();
+    getPastMeetings();
   }, [user]);
   const today = new Date();
   const month = today.toLocaleString("default", { month: "long" });
