@@ -17,7 +17,6 @@ export default function DashboardView() {
   const { isLoading, user } = useAuth0();
   const [tokenObj, setTokenObj] = useState(null);
 
-  
   useEffect(() => {
     const token = {};
     const queryStringWithHash = window.location.hash.substring(1);
@@ -27,9 +26,12 @@ export default function DashboardView() {
     });
     console.log("tokenObjjjj1: ", token);
     if (Object.keys(token).length > 0) {
-    //   console.log("tokenObjjjj2: ", token);
-    console.log("tokenObjjjj2: ", Object.keys(token).length > 0 ? token : null);
-    setTokenObj(token);
+      //   console.log("tokenObjjjj2: ", token);
+      console.log(
+        "tokenObjjjj2: ",
+        Object.keys(token).length > 0 ? token : null
+      );
+      setTokenObj(token);
     }
     console.log("tokenObjjjj3: ", token);
   }, []);
@@ -40,7 +42,7 @@ export default function DashboardView() {
   //     getMicrosoftEvents();
   //   }
   // }, [token]);
-  const code = new URLSearchParams(window.location.search)
+  const code = new URLSearchParams(window.location.search);
   code.forEach((value, key) => {
     console.log("codeee: ", value, key);
   });
@@ -55,55 +57,92 @@ export default function DashboardView() {
         const response = await IsUserHasGoogleAccessToken({
           email: email,
         });
-        if (!response?.data?.data && !code && !isLoading)
-          redirectToGoogleAuth();
+        if (response?.data?.data) {
+          const events = await getEvents();
+          console.log("events: ", events);
+        } else {
+          if (!response?.data?.data && !code && !isLoading)
+            redirectToGoogleAuth();
+        }
       };
       CheckUserStatus(user?.email);
     }
   }, []);
 
+  const getEvents = async () => {
+    const now = new Date();
+    const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+    const lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+
+    if (user?.sub?.includes("google-oauth2")) {
+      const code = new URLSearchParams(window.location.search).get("code");
+      const GCparams = {
+        userEmail: user?.email,
+        timeMin: firstDayOfWeek.toISOString(),
+        timeMax: lastDayOfWeek.toISOString(),
+        code: localStorage.getItem("code"),
+      };
+      // GCparams.code = localStorage.getItem("code");
+      const response = await GetGoogleCalendarEvents(GCparams);
+      setEvents(response?.data?.data);
+      return response?.data?.data;
+    } else {
+      const MCparams = {
+        userEmail: user?.email,
+        timeMin: firstDayOfWeek.toISOString(),
+        timeMax: lastDayOfWeek.toISOString(),
+      };
+      console.log("tokenObj: ", tokenObj);
+      if (tokenObj) MCparams.accessToken = tokenObj;
+      const response = await GetMicrosoftCalendarEvents(MCparams);
+      console.log("responseeee: ", response);
+      // setEvents(response?.data?.value);
+    }
+  };
+  
   const redirectToGoogleAuth = () => {
     const googleAuthConfig = GetGoogleAuthConfig();
+    console.log("googleAuthConfig: ", googleAuthConfig);
     const client =
       window.google.accounts.oauth2.initCodeClient(googleAuthConfig);
     client.requestCode();
   };
 
-  useEffect(() => {
-    const getEvents = async () => {
-      const now = new Date();
-      const firstDayOfWeek = new Date(
-        now.setDate(now.getDate() - now.getDay())
-      );
-      const lastDayOfWeek = new Date(firstDayOfWeek);
-      lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+  // useEffect(() => {
+  //   const getEvents = async () => {
+  //     const now = new Date();
+  //     const firstDayOfWeek = new Date(
+  //       now.setDate(now.getDate() - now.getDay())
+  //     );
+  //     const lastDayOfWeek = new Date(firstDayOfWeek);
+  //     lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
 
-      if (!user?.sub?.includes("google-oauth2")) {
-        const code = new URLSearchParams(window.location.search).get("code");
-        const GCparams = {
-          userEmail: user?.email,
-          timeMin: firstDayOfWeek.toISOString(),
-          timeMax: lastDayOfWeek.toISOString(),
-        };
-        if (code) GCparams.code = code;
-        const response = await GetGoogleCalendarEvents(GCparams);
-        setEvents(response?.data?.data);
-      } else {
-        const MCparams = {
-          userEmail: user?.email,
-          timeMin: firstDayOfWeek.toISOString(),
-          timeMax: lastDayOfWeek.toISOString(),
-        };
-        console.log("tokenObj: ", tokenObj);
-        if (tokenObj) MCparams.accessToken = tokenObj;
-        const response = await GetMicrosoftCalendarEvents(MCparams);
-        console.log("responseeee: ", response);
-
-        // setEvents(response?.data?.value);
-      }
-    };
-    getEvents();
-  }, [isLoading, tokenObj]);
+  //     if (!user?.sub?.includes("google-oauth2")) {
+  //       const code = new URLSearchParams(window.location.search).get("code");
+  //       const GCparams = {
+  //         userEmail: user?.email,
+  //         timeMin: firstDayOfWeek.toISOString(),
+  //         timeMax: lastDayOfWeek.toISOString(),
+  //       };
+  //       if (code) GCparams.code = code;
+  //       const response = await GetGoogleCalendarEvents(GCparams);
+  //       setEvents(response?.data?.data);
+  //     } else {
+  //       const MCparams = {
+  //         userEmail: user?.email,
+  //         timeMin: firstDayOfWeek.toISOString(),
+  //         timeMax: lastDayOfWeek.toISOString(),
+  //       };
+  //       console.log("tokenObj: ", tokenObj);
+  //       if (tokenObj) MCparams.accessToken = tokenObj;
+  //       const response = await GetMicrosoftCalendarEvents(MCparams);
+  //       console.log("responseeee: ", response);
+  //       // setEvents(response?.data?.value);
+  //     }
+  //   };
+  //   getEvents();
+  // }, [isLoading, tokenObj]);
   return (
     <div>
       {console.log("tokenObjjjj4: ", tokenObj)}

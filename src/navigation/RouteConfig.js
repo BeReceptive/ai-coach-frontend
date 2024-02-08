@@ -7,6 +7,7 @@ import PrivateRoute from "../components/common/PrivateRoute";
 import DashboardView from "../views/dashboard/DashboardView";
 import DashboardLayout from "../layout/DashboardLayout";
 import AddProfile from "../views/profile/AddProfile";
+import { AuthProvider } from "../contexts/UserContext";
 
 const Auth0ProviderWithRedirectCallback = ({ children, ...props }) => {
   const navigate = useNavigate();
@@ -28,26 +29,28 @@ function RouteConfig() {
 
   return (
     <Auth0ProviderWithRedirectCallback
-        domain={process.env.REACT_APP_AUTH0_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-        authorizationParams={{
-          redirect_uri: window.location.origin + "/dashboard",
-          // audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-        }}
-      >
-      <Routes>
-        {/* <Route path="/" element={<DashboardLayout></DashboardLayout>}> */}
-        <Route path="/" element={<DashboardLayout />}>
-        <Route
-            path='/dashboard'
-            element={<PrivateRoute component={DashboardView} />}
-          />
-          <Route
-                path='/profile'
-                element={<PrivateRoute component={AddProfile} />}
+      domain={process.env.REACT_APP_AUTH0_DOMAIN}
+      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+      authorizationParams={{
+        redirect_uri: window.location.origin + "/dashboard",
+        // audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+      }}
+    >
+      <AuthProvider>
+        <Routes>
+          {/* <Route path="/" element={<DashboardLayout></DashboardLayout>}> */}
+          <Route path="/" element={<DashboardLayout />}>
+            <Route
+              path="/dashboard"
+              element={<PrivateRoute component={DashboardView} />}
             />
-        </Route>
-      </Routes>
+            <Route
+              path="/profile"
+              element={<PrivateRoute component={AddProfile} />}
+            />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </Auth0ProviderWithRedirectCallback>
   );
 }

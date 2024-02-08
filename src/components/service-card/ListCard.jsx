@@ -26,6 +26,7 @@ export default function ListCard() {
         userEmail: user?.email,
         timeMin: oneWeekAgo.toISOString(),
         timeMax: threeHoursAgo.toISOString(),
+        code: localStorage.getItem("code"),
       };
       const response = await GetGoogleCalendarEvents(params);
       setPastMeetings(response?.data?.data);

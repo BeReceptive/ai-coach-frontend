@@ -13,17 +13,17 @@ export default function DashboardLayout() {
     if (!isLoading && window.location.pathname === "/") {
       navigate("/dashboard");
     }
-    const saveUserToDB = async () => {
-      const savedUser = {
-        name: user?.name,
-        email: user?.email,
-        imageUrl: user?.picture,
-      };
-      if (user) {
-        const res = await saveUser(savedUser);
-      }
-    };
-    saveUserToDB();
+  //   const saveUserToDB = async () => {
+  //     const savedUser = {
+  //       name: user?.name,
+  //       email: user?.email,
+  //       imageUrl: user?.picture,
+  //     };
+  //     if (user) {
+  //       const res = await saveUser(savedUser);
+  //     }
+  //   };
+  //   // saveUserToDB();
   }, [user]);
 
   return (
