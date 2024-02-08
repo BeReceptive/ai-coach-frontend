@@ -39,7 +39,6 @@ export default function ListCard() {
 
   return (
     <>
-      {console.log("pastMeetings: ", pastMeetings)}
       {pastMeetings.length > 0 ? (
         <ul className="list-card divide-y divide-gray-100 my-5">
           {pastMeetings.map((pastMeeting) => (

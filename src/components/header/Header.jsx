@@ -1,14 +1,19 @@
-import React, {Fragment, useEffect} from "react";
-import {Disclosure, Menu, Transition} from "@headlessui/react";
-import {useAuth0} from "@auth0/auth0-react";
-import {Bars3Icon, BellIcon, XMarkIcon} from "@heroicons/react/24/outline";
+import React, { Fragment, useEffect } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import SignoutButton from "./SignoutButton";
-import {GetGoogleCalendarEvents} from "../../services/googleCalendar.service";
-import {saveUser} from "../../services/user.service";
+import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
+import { saveUser } from "../../services/user.service";
 import LogoIcon from "../../assets/icons/defaultIcons";
-import logoText from "../../assets/images/AI-Clarity.png";
-import userIcon from "../../assets/images/user.png"
+import logoText from "../../assets/images/Logo.png";
+import userIcon from "../../assets/images/user.png";
+import axios from "axios";
+
+import { Client } from "@microsoft/microsoft-graph-client";
+import { InteractionRequiredAuthError } from "@azure/msal-browser";
+import { getAuthUrl } from "../../services/microsoftCalendar.service";
 
 const user = {
   name: "Tom Cook",
@@ -29,27 +34,58 @@ function classNames(...classes) {
 export default function Header() {
   const { user } = useAuth0();
 
-  const code = new URLSearchParams(window.location.search).get('code');
 
-  useEffect(() => {
+
+  // useEffect(() => {
     // save user to db
-    const saveUserToDB = async () => {
-      const savedUser = {
-        name: user?.name,
-        email: user?.email,
-        imageUrl: user?.picture,
-      };
-      if (user) {
-        const res = await saveUser(savedUser);
-      }
-    };
-    saveUserToDB();
-  }, [user]);
+    // const saveUserToDB = async () => {
+    //   const savedUser = {
+    //     name: user?.name,
+    //     email: user?.email,
+    //     imageUrl: user?.picture,
+    //   };
+    //   if (user) {
+    //     const res = await saveUser(savedUser);
+    //   }
+    // };
+    // saveUserToDB();
+  // }, [user]);
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
-    // const res = await GetGoogleCalendarEvents();
-    // console.log(res);
-    // window.location.href = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=3e0f1c6c-0c9d-4f8c-8f6c-6e7c7e4b3f9c&response_type=code&redirect_uri=http://localhost:3000&response_mode=query&scope=openid%20offline_access%20profile%20email%20https://graph.microsoft.com/calendars.read%20https://graph.microsoft.com/calendars.read.shared%20https://graph.microsoft.com/calendars.readwrite%20https://graph.microsoft.com/calendars.readwrite.shared%20https://graph.microsoft.com/User.Read&state=12345`;
+    const authUrl = getAuthUrl();
+    // Redirect the user to the Microsoft login page
+    window.location.href = authUrl;
+  };
+  async function getCalendarEvents(msalInstance) {
+    // try {
+    //   const accounts = msalInstance.getAllAccounts();
+    //   if (accounts.length === 0) throw Error("No accounts detected");
+    //   const silentRequest = {
+    //     scopes: ["Calendars.Read"],
+    //     account: accounts[0],
+    //   };
+    //   const silentResult = await msalInstance.acquireTokenSilent(silentRequest);
+    //   const client = Client.init({
+    //     authProvider: (done) => {
+    //       done(null, silentResult.accessToken);
+    //     },
+    //   });
+    //   const events = await client.api("/me/events").get();
+    //   return events.value;
+    // } catch (error) {
+    //   if (error instanceof InteractionRequiredAuthError) {
+    //     const accounts = msalInstance.getAllAccounts();
+    //   if (accounts.length === 0) throw Error("No accounts detected");
+    //   const silentRequest = {
+    //     scopes: ["Calendars.Read"],
+    //     account: accounts[0],
+    //   };
+    //     // fallback to interaction when silent call fails
+    //     msalInstance.acquireTokenRedirect(silentRequest);
+    //   } else {
+    //     throw error;
+    //   }
+    // }
   }
 
   return (
@@ -61,7 +97,7 @@ export default function Header() {
               <div className="flex h-16 items-center justify-between">
                 <div className="flex items-center">
                   <div className="flex gap-2 2xl:h-90">
-                    <LogoIcon />
+                    {/* <LogoIcon /> */}
                     <img src={logoText} className={""} height={90} />
                   </div>
                 </div>
@@ -82,7 +118,7 @@ export default function Header() {
                         <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">Open user menu</span>
-                                                    <img
+                          <img
                             className="h-8 w-8 rounded-full"
                             src={user?.picture ? user?.picture : userIcon}
                             alt=""
@@ -191,7 +227,7 @@ export default function Header() {
               <div
                 onClick={handleIntegrationWithMicrosoftCalendar}
                 // onClick={
-                  // handleIntegrationWithGoogleCalendar
+                // handleIntegrationWithGoogleCalendar
                 // }
                 className="mt-2 flex items-center text-md text-white font-semibold"
               >

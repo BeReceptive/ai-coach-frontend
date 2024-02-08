@@ -4,8 +4,8 @@ import {
 } from "../../services/feedback.service";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import "./feedback-modal.scss"
-import userIcon from "../../assets/images/user.png"
+import "./feedback-modal.scss";
+import userIcon from "../../assets/images/user.png";
 
 export default function FeedbackModal({
   user,
@@ -63,7 +63,7 @@ export default function FeedbackModal({
               >
                 <Dialog.Panel
                   className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:p-6"
-                  style={{ width: "25%" }}
+                  style={{ width: "32%" }}
                 >
                   {showFeedbackForm ? (
                     <FeedbackForm
@@ -99,8 +99,8 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   return (
     <>
       <div className="mb-2 attendees">
-        <h3 className={'sub-heading'}>Profile</h3>
-        <p className={'des'}>This information will be displayed publicy</p>
+        <h3 className={"sub-heading"}>Profile</h3>
+        <p className={"des"}>This information will be displayed publicy</p>
         <label
           htmlFor="name"
           className="block text-sm font-medium leading-6 text-gray-900"
@@ -124,8 +124,8 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
             (attendee) => search == null || attendee.email.includes(search)
           )
           .map((attendee) => (
-              <div className={'attendees-card flex align-center justify-between'}>
-                <div className="flex items-center">
+            <div className={"attendees-card flex align-center justify-between"}>
+              <div className="flex items-center">
                 <div className="px-2">
                   <img
                     className="h-10 w-10 rounded-full"
@@ -140,8 +140,8 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
               </div>
               <div className="w-25 gap-x-2.5 justify-self-end self-center">
                 <button
-                    type="button"
-                    className="theme-btn-round px-2 py-1 text-sm "
+                  type="button"
+                  className="theme-btn-round px-2 py-1 text-sm "
                   onClick={() => onClick(attendee)}
                   disabled={
                     attendee.email == user.email ||
@@ -165,7 +165,7 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                     : "Give Feedback"}
                 </button>
               </div>
-              </div>
+            </div>
           ))}
       </div>
     </>
@@ -175,22 +175,18 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
 function FeedbackForm({ user, meetingId, attendee, onClose }) {
   const [feedback, setFeedback] = useState(null);
   return (
-      <div className={'feedback-form'}>
+    <div className={"feedback-form"}>
       <div className="flex">
         <div className="px-2">
-          <img
-            className="h-10 w-10 rounded-full"
-            src={userIcon}
-            alt=""
-          />
+          <img className="h-10 w-10 rounded-full" src={userIcon} alt="" />
         </div>
         <div className="flex-auto">
           <div>{attendee.name}</div>
           <textarea
-              rows={14}
+            rows={14}
             name="feedback"
             id="feedback"
-              className="text-field block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="text-field block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             defaultValue={""}
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Give your feedback"

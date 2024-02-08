@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
+    "@azure/msal-browser": "^3.7.1",
+    "@azure/msal-react": "^2.0.10",
     "@daypilot/daypilot-lite-react": "^3.20.1",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

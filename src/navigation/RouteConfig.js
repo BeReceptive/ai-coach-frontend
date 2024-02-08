@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import PrivateRoute from "../components/common/PrivateRoute";
 import DashboardView from "../views/dashboard/DashboardView";
 import DashboardLayout from "../layout/DashboardLayout";
+import AddProfile from "../views/profile/AddProfile";
 
 const Auth0ProviderWithRedirectCallback = ({ children, ...props }) => {
   const navigate = useNavigate();
@@ -35,11 +36,16 @@ function RouteConfig() {
         }}
       >
       <Routes>
-        <Route path="/" element={<DashboardLayout></DashboardLayout>}>
+        {/* <Route path="/" element={<DashboardLayout></DashboardLayout>}> */}
+        <Route path="/" element={<DashboardLayout />}>
         <Route
             path='/dashboard'
             element={<PrivateRoute component={DashboardView} />}
           />
+          <Route
+                path='/profile'
+                element={<PrivateRoute component={AddProfile} />}
+            />
         </Route>
       </Routes>
     </Auth0ProviderWithRedirectCallback>

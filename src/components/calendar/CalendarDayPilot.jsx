@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
+import "./Calendar"
 
 const CalendarDayPilot = ({ events }) => {
   const [config, setConfig] = useState({
@@ -23,7 +24,6 @@ const CalendarDayPilot = ({ events }) => {
 
   return (
     <>
-      {console.log("eventssss: ", config, events)}
       <DayPilotCalendar {...config} ref={calendarRef} />
     </>
   );

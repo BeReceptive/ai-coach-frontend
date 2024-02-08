@@ -1,17 +1,29 @@
 import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Outlet, useNavigate } from "react-router";
 import "./dashboard-layout.scss";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
-import { Outlet, useNavigate } from "react-router";
+import { saveUser } from "../services/user.service";
 
 export default function DashboardLayout() {
   const { isLoading, user } = useAuth0();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && window.location.pathname === "/") {
       navigate("/dashboard");
     }
+    const saveUserToDB = async () => {
+      const savedUser = {
+        name: user?.name,
+        email: user?.email,
+        imageUrl: user?.picture,
+      };
+      if (user) {
+        const res = await saveUser(savedUser);
+      }
+    };
+    saveUserToDB();
   }, [user]);
 
   return (

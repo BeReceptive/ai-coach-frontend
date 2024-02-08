@@ -66,8 +66,7 @@ export default function ShortCalendar() {
     start: startOfWeek(startOfMonth(today)),
     end: endOfWeek(endOfMonth(today)),
   });
-  console.log("newDays: ", newDays);
-
+  
   return (
     <div className={"short-calendar-card rounded-2xl"}>
       <div className="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
