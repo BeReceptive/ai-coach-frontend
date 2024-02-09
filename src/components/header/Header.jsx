@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 import SignoutButton from "./SignoutButton";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
@@ -14,6 +15,7 @@ import axios from "axios";
 import { Client } from "@microsoft/microsoft-graph-client";
 import { InteractionRequiredAuthError } from "@azure/msal-browser";
 import { getAuthUrl } from "../../services/microsoftCalendar.service";
+import { useAuth } from "../../contexts/UserContext";
 
 const user = {
   name: "Tom Cook",
@@ -23,7 +25,7 @@ const user = {
 };
 
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
+  { name: "Your Profile", href: "/profile" },
   { name: "Settings", href: "#" },
 ];
 
@@ -34,22 +36,7 @@ function classNames(...classes) {
 export default function Header() {
   const { user } = useAuth0();
 
-
-
-  // useEffect(() => {
-    // save user to db
-    // const saveUserToDB = async () => {
-    //   const savedUser = {
-    //     name: user?.name,
-    //     email: user?.email,
-    //     imageUrl: user?.picture,
-    //   };
-    //   if (user) {
-    //     const res = await saveUser(savedUser);
-    //   }
-    // };
-    // saveUserToDB();
-  // }, [user]);
+  const {authUser} = useAuth();
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
     const authUrl = getAuthUrl();
@@ -120,7 +107,7 @@ export default function Header() {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={user?.picture ? user?.picture : userIcon}
+                            src={authUser?.imageUrl || userIcon}
                             alt=""
                           />
                         </Menu.Button>
@@ -176,7 +163,7 @@ export default function Header() {
                   <div className="flex-shrink-0">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src={user?.picture || userIcon}
+                      src={authUser?.imageUrl || userIcon}
                       alt=""
                     />
                   </div>
@@ -219,10 +206,10 @@ export default function Header() {
           <div className="min-w-0 flex-1">
             <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-12">
               <div className="mt-2 flex items-center text-md text-white font-semibold">
-                Dashboard
+              <Link to="/dashboard">Dashboard</Link>
               </div>
               <div className="mt-2 flex items-center text-md text-white font-semibold">
-                Coach Insights
+              <Link to="#">Coach Insights</Link>
               </div>
               <div
                 onClick={handleIntegrationWithMicrosoftCalendar}

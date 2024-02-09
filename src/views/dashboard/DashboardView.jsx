@@ -81,7 +81,8 @@ export default function DashboardView() {
         userEmail: user?.email,
         timeMin: firstDayOfWeek.toISOString(),
         timeMax: lastDayOfWeek.toISOString(),
-        code: localStorage.getItem("code"),
+        code: localStorage.getItem("googleCode"),
+        type: "eventsssss"
       };
       // GCparams.code = localStorage.getItem("code");
       const response = await GetGoogleCalendarEvents(GCparams);
@@ -100,7 +101,7 @@ export default function DashboardView() {
       // setEvents(response?.data?.value);
     }
   };
-  
+
   const redirectToGoogleAuth = () => {
     const googleAuthConfig = GetGoogleAuthConfig();
     console.log("googleAuthConfig: ", googleAuthConfig);
@@ -163,9 +164,9 @@ export default function DashboardView() {
       <div className="container mx-auto my-5">
         <div className="flex">
           <div className="flex-1">
-            <h3 className={"text-black text-2xl text-left mb-3"}>
+            {/* <h3 className={"text-black text-2xl text-left mb-3"}>
               Coach Insights
-            </h3>
+            </h3> */}
             <ServiceCard />
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function DashboardLayout() {
   //     }
   //   };
   //   // saveUserToDB();
-  }, [user]);
+  }, [isLoading]);
 
   return (
     <>

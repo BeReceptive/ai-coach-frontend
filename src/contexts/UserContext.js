@@ -8,11 +8,11 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const shop = JSON.parse(localStorage.getItem("shop"))?.shop;
 
   const code = new URLSearchParams(window.location.search).get("code");
-  if(code) {
-    localStorage.setItem("code", code);
+  const scope = new URLSearchParams(window.location.search).get("scope");
+  if(code && scope && code !== null && scope !== null) {
+    localStorage.setItem("googleCode", code);
   }
 
   useEffect(() => {
@@ -27,10 +27,10 @@ export const AuthProvider = ({ children }) => {
           if (user) {
             const response = await saveUser(userPayload);
             console.log("UserContext: ", response?.data?.data, response);
-            if (response.user) {
+            if (response.status) {
               // Set the user data in your context
               setAuthUser({
-                ...response.user,
+                ...response?.data?.data,
               });
             } else {
               // Handle the error
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     handleUserSignup();
-  }, [user, isAuthenticated, getAccessTokenSilently, shop]);
+  }, [user, isAuthenticated, getAccessTokenSilently]);
 
   return (
     <AuthContext.Provider value={{ authUser, setAuthUser }}>

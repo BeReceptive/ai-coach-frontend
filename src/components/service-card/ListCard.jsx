@@ -1,20 +1,29 @@
+import { useEffect, useState, useCallback } from "react";
 import { CalendarIcon } from "@heroicons/react/20/solid";
-import "./cards.scss";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
+import { debounce } from "lodash";
+import "./cards.scss";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import FeedbackModal from "./FeedbackModal";
-import userIcon from "../../assets/images/user.png"
+import userIcon from "../../assets/images/user.png";
 
 export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
   const { user } = useAuth0();
 
   useEffect(() => {
-    const getPastMeetings = async () => {
+    fetchPastMeetings();
+    // const getPastMeetings = async () => {};
+    // getPastMeetings();
+  }, [user]);
+
+  const fetchPastMeetings = useCallback(
+    debounce(async () => {
+      setLoading(true);
       const currentDate = new Date();
       const oneWeekAgo = new Date(
         currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
@@ -26,13 +35,18 @@ export default function ListCard() {
         userEmail: user?.email,
         timeMin: oneWeekAgo.toISOString(),
         timeMax: threeHoursAgo.toISOString(),
-        code: localStorage.getItem("code"),
+        code: localStorage.getItem("googleCode"),
+        type: "past eventssss",
       };
       const response = await GetGoogleCalendarEvents(params);
-      setPastMeetings(response?.data?.data);
-    };
-    getPastMeetings();
-  }, [user]);
+      if (response?.status) {
+        setPastMeetings(response?.data?.data);
+      }
+      setLoading(false);
+    }, 500),
+    []
+  );
+
   const today = new Date();
   const month = today.toLocaleString("default", { month: "long" });
   const day = today.toLocaleDateString("default", { day: "numeric" });
@@ -87,9 +101,7 @@ export default function ListCard() {
                       {!attendee?.organizer ? (
                         <img
                           className="h-6 w-6 rounded-full bg-gray-50 ring-2 ring-white"
-                          src={
-                            userIcon
-                          }
+                          src={userIcon}
                           alt={attendee?.email}
                         />
                       ) : (

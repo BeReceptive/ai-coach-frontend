@@ -10,6 +10,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import "./add-profile.scss";
+import { useAuth } from "../../contexts/UserContext";
+import userIcon from "../../assets/images/user.png";
 
 const navigation = [
   { name: "Projects", href: "#", icon: FolderIcon, current: false },
@@ -38,6 +40,8 @@ function classNames(...classes) {
 
 export default function AddProfile() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {authUser} = useAuth();
+  console.log("authUser: ", authUser)
 
   return (
     <>
@@ -223,7 +227,7 @@ export default function AddProfile() {
                   <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                     <div className="col-span-full flex items-center gap-x-8">
                       <img
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={authUser?.imageUrl || userIcon} //"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                         alt=""
                         className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
                       />
@@ -270,6 +274,7 @@ export default function AddProfile() {
                         <input
                           type="text"
                           name="first-name"
+                          defaultValue={authUser?.name}
                           id="first-name"
                           autoComplete="given-name"
                           required={true}
@@ -308,15 +313,16 @@ export default function AddProfile() {
                           id="email"
                           name="email"
                           type="email"
+                          defaultValue={authUser?.email}
                           autoComplete="email"
                           className="bg-gray-100 block w-full rounded-md border-0 py-1.5 pl-4 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
-                        <p
+                        {/* <p
                           className="mt-2 text-sm text-red-600 text-left"
                           id="email-error"
                         >
                           Not a valid email address.
-                        </p>
+                        </p> */}
                       </div>
                     </div>
 

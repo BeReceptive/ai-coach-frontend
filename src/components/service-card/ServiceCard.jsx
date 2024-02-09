@@ -50,6 +50,9 @@ export default function ServiceCard() {
     <>
       {feedbacks.length > 0 ? (
         <>
+          <h3 className={"text-black text-2xl text-left mb-3"}>
+            Coach Insights
+          </h3>
           {feedbacks.map((feedback) => (
             <div className="bg-white px-4 py-5 sm:px-6">
               <div className="flex space-x-3">
