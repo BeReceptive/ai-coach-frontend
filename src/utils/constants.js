@@ -5,4 +5,5 @@ export const apiUrl = {
     microsoftCalendar: 'microsoft-calendar',
     user: 'user',
     feedback: 'feedback',
+    coachInsights: 'coach-insight',
 }

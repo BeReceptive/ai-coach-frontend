@@ -12,6 +12,7 @@ export default function ListCard() {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
+  const [selectedMeeting, setSelectedMeeting] = useState(null);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
   const { user } = useAuth0();
 
@@ -26,7 +27,7 @@ export default function ListCard() {
       setLoading(true);
       const currentDate = new Date();
       const oneWeekAgo = new Date(
-        currentDate.getTime() - 7 * 24 * 60 * 60 * 1000
+        currentDate.getTime() - 17 * 24 * 60 * 60 * 1000
       );
       const threeHoursAgo = new Date(
         currentDate.getTime() - 1 * 60 * 60 * 1000
@@ -116,6 +117,7 @@ export default function ListCard() {
                     className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
                     onClick={() => {
                       setShowFeedbackModal(true);
+                      setSelectedMeeting(pastMeeting);
                       setSelectedMeetingId(pastMeeting?.id);
                       setSelectedMeetingAttendees(pastMeeting.attendees);
                     }}
@@ -132,6 +134,7 @@ export default function ListCard() {
       )}
       <FeedbackModal
         meetingId={selectedMeetingId}
+        meeting={selectedMeeting}
         attendees={selectedMeetingAttendees}
         showFeedbackModal={showFeedbackModal}
         user={user}

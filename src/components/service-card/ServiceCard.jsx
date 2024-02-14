@@ -10,6 +10,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { getFeedbacksByQuery } from "../../services/feedback.service";
 import moment from "moment";
 import userIcon from "../../assets/images/user.png";
+import { getCoachInsightsByQuery } from "../../services/coachInsight.service";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -18,14 +19,18 @@ function classNames(...classes) {
 export default function ServiceCard() {
   const { user } = useAuth0();
   const [feedbacks, setFeedbacks] = useState([]);
+  const [coachInsights, setCoachInsights] = useState([]);
 
   useEffect(() => {
     const getFeedbacks = async () => {
-      const feedbackParams = {
+      const coachInsightParams = {
         givenTo: user?.email,
       };
-      const response = await getFeedbacksByQuery(feedbackParams);
-      setFeedbacks(response.data);
+      const response = await getFeedbacksByQuery(coachInsightParams);
+      const res2 = await getCoachInsightsByQuery(coachInsightParams);
+      console.log("response2: ", res2);
+      setCoachInsights(res2?.data);
+      setFeedbacks(response?.data);
     };
     getFeedbacks();
   }, []);
@@ -48,31 +53,31 @@ export default function ServiceCard() {
 
   return (
     <>
-      {feedbacks.length > 0 ? (
+      {coachInsights.length > 0 ? (
         <>
           <h3 className={"text-black text-2xl text-left mb-3"}>
             Coach Insights
           </h3>
-          {feedbacks.map((feedback) => (
+          {coachInsights.map((coachInsight) => (
             <div className="bg-white px-4 py-5 sm:px-6">
               <div className="flex space-x-3">
                 <div className="flex-shrink-0">
-                  <img
+                  {/* <img
                     className="h-10 w-10 rounded-full"
                     // src="https://lh3.googleusercontent.com/a/ACg8ocJ3rX6wLtgIMoFewITVTi8dIJE58Hp0_gFsH9Q7r2nY=s96-c"
-                    src={feedback?.givenByUser?.imageUrl || userIcon} //"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={coachInsight?.givenByUser?.imageUrl || userIcon} //"https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                     alt=""
-                  />
+                  /> */}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-gray-900 text-left">
-                    <a href="#" className="hover:underline">
-                      {feedback?.givenByUser?.name || feedback?.givenBy}
-                    </a>
+                    {/* <a href="#" className="hover:underline">
+                      {coachInsight?.givenByUser?.name || coachInsight?.givenBy}
+                    </a> */}
                   </p>
                   <p className="text-sm text-gray-500 text-left">
                     <a href="#" className="hover:underline">
-                      {formatDate(feedback?.createdAt)}
+                      {formatDate(coachInsight?.createdAt)}
                     </a>
                   </p>
                 </div>
@@ -164,7 +169,7 @@ export default function ServiceCard() {
               </div>
               <div>
                 <p className={"text-gray-400 text-base text-left mt-3"}>
-                  {feedback?.gptFeedback || feedback?.feedback}
+                  {coachInsight?.gptFeedbackSummary || ""}
                 </p>
               </div>
             </div>

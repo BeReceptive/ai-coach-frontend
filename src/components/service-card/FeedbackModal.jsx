@@ -4,12 +4,15 @@ import {
 } from "../../services/feedback.service";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { toast } from "react-toastify";
 import "./feedback-modal.scss";
 import userIcon from "../../assets/images/user.png";
+import { getErrorMessage } from "../../utils/helpers";
 
 export default function FeedbackModal({
   user,
   meetingId,
+  meeting,
   attendees,
   showFeedbackModal,
   onClose,
@@ -28,6 +31,7 @@ export default function FeedbackModal({
           meetingId,
         };
         const response = await getFeedbacksByQuery(feedbackParams);
+        console.log("response2: ", response);
         setExistingFeedbacks(response.data);
       };
       getFeedbacks();
@@ -69,6 +73,7 @@ export default function FeedbackModal({
                     <FeedbackForm
                       user={user}
                       meetingId={meetingId}
+                      meeting={meeting}
                       attendee={selectedAttendee}
                       onClose={() => {
                         setShowFeedbackForm(false);
@@ -81,6 +86,7 @@ export default function FeedbackModal({
                       user={user}
                       feedbacks={existingFeedbacks}
                       meetingId={meetingId}
+                      meeting={meeting}
                       onClick={onClick}
                     />
                   )}
@@ -147,17 +153,18 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                     attendee.email == user.email ||
                     feedbacks.filter(
                       (feedback) =>
-                        feedback.meetingId == meetingId &&
+                        feedback?.meeting?.meetingId == meetingId &&
                         feedback.givenBy == user.email &&
                         feedback.givenTo == attendee.email
                     ).length > 0
                   }
                 >
+
                   {attendee.email == user.email
                     ? "Self"
                     : feedbacks.filter(
                         (feedback) =>
-                          feedback.meetingId == meetingId &&
+                          feedback?.meeting?.meetingId == meetingId &&
                           feedback.givenBy == user.email &&
                           feedback.givenTo == attendee.email
                       ).length > 0
@@ -172,8 +179,32 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   );
 }
 
-function FeedbackForm({ user, meetingId, attendee, onClose }) {
+function FeedbackForm({ user, meetingId, meeting, attendee, onClose }) {
   const [feedback, setFeedback] = useState(null);
+
+  const giveFeedback = async () => {
+    const feedbackObj = {
+      givenBy: user.email,
+      givenTo: attendee.email,
+      meetingId,
+      meetingStart: meeting.start.dateTime,
+      meetingEnd: meeting.end.dateTime,
+      meetingTimezone: meeting.start.timeZone,
+      meetingStatus: meeting.status,
+      feedback,
+    };
+    try {
+      const response = await saveFeedback(feedbackObj);
+      if (response?.status) {
+        toast.success("Feedback submitted successfully");
+        onClose();
+      }
+    } catch (error) {
+      const errorMsg = getErrorMessage(error);
+      toast.error(errorMsg);
+    }
+  };
+
   return (
     <div className={"feedback-form"}>
       <div className="flex">
@@ -197,15 +228,16 @@ function FeedbackForm({ user, meetingId, attendee, onClose }) {
         <button
           type="button"
           className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-          onClick={() => {
-            saveFeedback({
-              givenBy: user.email,
-              givenTo: attendee.email,
-              meetingId,
-              feedback,
-            });
-            onClose();
-          }}
+          onClick={giveFeedback}
+          // onClick={() => {
+          //   saveFeedback({
+          //     givenBy: user.email,
+          //     givenTo: attendee.email,
+          //     meetingId,
+          //     feedback,
+          //   });
+          //   onClose();
+          // }}
         >
           Submit
         </button>

@@ -71,9 +71,13 @@ export default function DashboardView() {
 
   const getEvents = async () => {
     const now = new Date();
-    const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+    // const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+    const firstDayOfWeek = new Date(now.setDate(1));
+
     const lastDayOfWeek = new Date(firstDayOfWeek);
-    lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+    // lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+    lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 14);
+    console.log("firsssttt: ", firstDayOfWeek.toISOString(), lastDayOfWeek.toISOString(), now.getDate());
 
     if (user?.sub?.includes("google-oauth2")) {
       const code = new URLSearchParams(window.location.search).get("code");
