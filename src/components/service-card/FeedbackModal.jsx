@@ -125,7 +125,7 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
         </div>
       </div>
       <div className="attendees-list flex flex-col gap-1">
-        {attendees
+        {attendees?.length && attendees
           .filter(
             (attendee) => search == null || attendee.email.includes(search)
           )

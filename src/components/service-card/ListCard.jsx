@@ -6,6 +6,7 @@ import "./cards.scss";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import FeedbackModal from "./FeedbackModal";
 import userIcon from "../../assets/images/user.png";
+import { getTimeRangeForPastMeetings } from "../../utils/helpers";
 
 export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
@@ -18,24 +19,16 @@ export default function ListCard() {
 
   useEffect(() => {
     fetchPastMeetings();
-    // const getPastMeetings = async () => {};
-    // getPastMeetings();
   }, [user]);
 
   const fetchPastMeetings = useCallback(
     debounce(async () => {
       setLoading(true);
-      const currentDate = new Date();
-      const oneWeekAgo = new Date(
-        currentDate.getTime() - 17 * 24 * 60 * 60 * 1000
-      );
-      const threeHoursAgo = new Date(
-        currentDate.getTime() - 1 * 60 * 60 * 1000
-      );
+      const { timeMin, timeMax } = getTimeRangeForPastMeetings();
       const params = {
         userEmail: user?.email,
-        timeMin: oneWeekAgo.toISOString(),
-        timeMax: threeHoursAgo.toISOString(),
+        timeMin: timeMin,
+        timeMax: timeMax,
         code: localStorage.getItem("googleCode"),
         type: "past eventssss",
       };
@@ -97,7 +90,7 @@ export default function ListCard() {
               <dl className="flex w-full flex-none justify-between gap-x-8 sm:w-auto">
                 <div className="flex -space-x-0.5">
                   <dt className="sr-only">Commenters</dt>
-                  {pastMeeting.attendees.map((attendee) => (
+                  {pastMeeting?.attendees?.map((attendee) => (
                     <dd>
                       {!attendee?.organizer ? (
                         <img

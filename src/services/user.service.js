@@ -6,7 +6,7 @@ export const saveUser = async (user) => {
   return response;
 };
 
-export const IsUserHasGoogleAccessToken = async (data) => {
+export const IsUserHasAccessToken = async (data) => {
   const response = await GET(`${apiUrl.user}/check-if-token-exists`, data);
   return response;
 }

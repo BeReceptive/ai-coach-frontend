@@ -20,3 +20,10 @@ export const GetGoogleAuthConfig = () => {
   }
   return googleAuthConfig;
 }
+
+export const redirectToGoogleAuth = () => {
+  const googleAuthConfig = GetGoogleAuthConfig();
+  const client =
+    window.google.accounts.oauth2.initCodeClient(googleAuthConfig);
+  client.requestCode();
+};

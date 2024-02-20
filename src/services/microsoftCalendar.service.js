@@ -1,11 +1,10 @@
-
 import { apiUrl } from "../utils/constants";
 import { GET, POST } from "./api.service.wrapper";
 
 export const GetMicrosoftCalendarEvents = async (params) => {
-    const response = await GET(`${apiUrl.microsoftCalendar}/events`, params);
-    return response;
-  };
+  const response = await GET(`${apiUrl.microsoftCalendar}/events`, params);
+  return response;
+};
 
 export const getAuthUrl = () => {
   const redirectUri = "http://localhost:3000/dashboard"; //process.env.MICROSOFT_CALENDAR_REDIRECT_URL;
@@ -20,3 +19,8 @@ export const getAuthUrl = () => {
   return authUrl;
 };
 
+export const redirectToMicrosoftAuth = () => {
+  const authUrl = getAuthUrl();
+  // Redirect the user to the Microsoft login page
+  window.location.href = authUrl;
+};

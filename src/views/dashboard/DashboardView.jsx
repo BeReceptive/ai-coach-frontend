@@ -8,9 +8,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {
   GetGoogleAuthConfig,
   GetGoogleCalendarEvents,
+  redirectToGoogleAuth,
 } from "../../services/googleCalendar.service";
-import { IsUserHasGoogleAccessToken } from "../../services/user.service";
-import { GetMicrosoftCalendarEvents } from "../../services/microsoftCalendar.service";
+import { IsUserHasAccessToken } from "../../services/user.service";
+import {
+  GetMicrosoftCalendarEvents,
+  getAuthUrl,
+  redirectToMicrosoftAuth,
+} from "../../services/microsoftCalendar.service";
+import { getTimeRange } from "../../utils/helpers";
 
 export default function DashboardView() {
   const [events, setEvents] = useState([]);
@@ -36,118 +42,64 @@ export default function DashboardView() {
     console.log("tokenObjjjj3: ", token);
   }, []);
 
-  // useEffect(() => {
-  //   if (Object.keys(token).length > 0) {
-  //     const getMicrosoftEvents = async () => {};
-  //     getMicrosoftEvents();
-  //   }
-  // }, [token]);
   const code = new URLSearchParams(window.location.search);
   code.forEach((value, key) => {
     console.log("codeee: ", value, key);
   });
 
   useEffect(() => {
-    if (user?.sub?.includes("google-oauth2")) {
-      // check if user has google access token
-      // if not redirect to google auth
-      // if yes then fetch events
-      const CheckUserStatus = async (email) => {
+    const CheckUserStatus = async (email) => {
+      if (user?.sub?.includes("google-oauth2")) {
         const code = new URLSearchParams(window.location.search).get("code");
-        const response = await IsUserHasGoogleAccessToken({
+        const response = await IsUserHasAccessToken({
           email: email,
+          platform: "google",
         });
         if (response?.data?.data) {
-          const events = await getEvents();
+          const events = await getEvents("google");
           console.log("events: ", events);
         } else {
           if (!response?.data?.data && !code && !isLoading)
             redirectToGoogleAuth();
         }
-      };
-      CheckUserStatus(user?.email);
-    }
+      } else if (user?.sub?.includes("windowslive")) {
+        const response = await IsUserHasAccessToken({
+          email: email,
+          platform: "microsoft",
+        });
+        if (response?.data?.data) {
+          const events = await getEvents("microsoft");
+          console.log("events: ", events);
+        } else {
+          if (!response?.data?.data && !isLoading) redirectToMicrosoftAuth();
+        }
+      }
+    };
+    CheckUserStatus(user?.email);
   }, []);
 
-  const getEvents = async () => {
-    const now = new Date();
-    // const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-    const firstDayOfWeek = new Date(now.setDate(1));
-
-    const lastDayOfWeek = new Date(firstDayOfWeek);
-    // lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-    lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 14);
-    console.log("firsssttt: ", firstDayOfWeek.toISOString(), lastDayOfWeek.toISOString(), now.getDate());
-
-    if (user?.sub?.includes("google-oauth2")) {
-      const code = new URLSearchParams(window.location.search).get("code");
-      const GCparams = {
-        userEmail: user?.email,
-        timeMin: firstDayOfWeek.toISOString(),
-        timeMax: lastDayOfWeek.toISOString(),
-        code: localStorage.getItem("googleCode"),
-        type: "eventsssss"
-      };
-      // GCparams.code = localStorage.getItem("code");
-      const response = await GetGoogleCalendarEvents(GCparams);
-      setEvents(response?.data?.data);
-      return response?.data?.data;
-    } else {
-      const MCparams = {
-        userEmail: user?.email,
-        timeMin: firstDayOfWeek.toISOString(),
-        timeMax: lastDayOfWeek.toISOString(),
-      };
-      console.log("tokenObj: ", tokenObj);
-      if (tokenObj) MCparams.accessToken = tokenObj;
-      const response = await GetMicrosoftCalendarEvents(MCparams);
-      console.log("responseeee: ", response);
-      // setEvents(response?.data?.value);
+  const getEvents = async (platform) => {
+    const { timeMin, timeMax } = getTimeRange();
+    const params = {
+      userEmail: user?.email,
+      timeMin: timeMin,
+      timeMax: timeMax,
+      type: "events",
+    };
+    switch (platform) {
+      case "google":
+        if (localStorage.getItem("googleCode"))
+          params.code = localStorage.getItem("googleCode");
+        const googleEvents = await GetGoogleCalendarEvents(params);
+        setEvents(googleEvents?.data?.data);
+      case "microsoft":
+        if (tokenObj) params.accessToken = tokenObj;
+        const microsoftEvents = await GetMicrosoftCalendarEvents(params);
+        console.log("responseeee: ", microsoftEvents);
+      // setEvents(microsoftEvents?.data?.value);
     }
   };
 
-  const redirectToGoogleAuth = () => {
-    const googleAuthConfig = GetGoogleAuthConfig();
-    console.log("googleAuthConfig: ", googleAuthConfig);
-    const client =
-      window.google.accounts.oauth2.initCodeClient(googleAuthConfig);
-    client.requestCode();
-  };
-
-  // useEffect(() => {
-  //   const getEvents = async () => {
-  //     const now = new Date();
-  //     const firstDayOfWeek = new Date(
-  //       now.setDate(now.getDate() - now.getDay())
-  //     );
-  //     const lastDayOfWeek = new Date(firstDayOfWeek);
-  //     lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-
-  //     if (!user?.sub?.includes("google-oauth2")) {
-  //       const code = new URLSearchParams(window.location.search).get("code");
-  //       const GCparams = {
-  //         userEmail: user?.email,
-  //         timeMin: firstDayOfWeek.toISOString(),
-  //         timeMax: lastDayOfWeek.toISOString(),
-  //       };
-  //       if (code) GCparams.code = code;
-  //       const response = await GetGoogleCalendarEvents(GCparams);
-  //       setEvents(response?.data?.data);
-  //     } else {
-  //       const MCparams = {
-  //         userEmail: user?.email,
-  //         timeMin: firstDayOfWeek.toISOString(),
-  //         timeMax: lastDayOfWeek.toISOString(),
-  //       };
-  //       console.log("tokenObj: ", tokenObj);
-  //       if (tokenObj) MCparams.accessToken = tokenObj;
-  //       const response = await GetMicrosoftCalendarEvents(MCparams);
-  //       console.log("responseeee: ", response);
-  //       // setEvents(response?.data?.value);
-  //     }
-  //   };
-  //   getEvents();
-  // }, [isLoading, tokenObj]);
   return (
     <div>
       {console.log("tokenObjjjj4: ", tokenObj)}

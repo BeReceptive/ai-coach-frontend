@@ -36,6 +36,8 @@ function classNames(...classes) {
 export default function Header() {
   const { user } = useAuth0();
 
+  console.log("userrrrrr: ", user);
+
   const {authUser} = useAuth();
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
