@@ -100,7 +100,7 @@ export default function FeedbackModal({
   );
 }
 
-function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
+export function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   const [search, setSearch] = useState(null);
   return (
     <>
@@ -159,7 +159,6 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                     ).length > 0
                   }
                 >
-
                   {attendee.email == user.email
                     ? "Self"
                     : feedbacks.filter(
@@ -179,7 +178,7 @@ function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
   );
 }
 
-function FeedbackForm({ user, meetingId, meeting, attendee, onClose }) {
+export function FeedbackForm({ user, meetingId, meeting, attendee, onClose }) {
   const [feedback, setFeedback] = useState(null);
 
   const giveFeedback = async () => {

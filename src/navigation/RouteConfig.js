@@ -8,6 +8,7 @@ import DashboardView from "../views/dashboard/DashboardView";
 import DashboardLayout from "../layout/DashboardLayout";
 import AddProfile from "../views/profile/AddProfile";
 import { AuthProvider } from "../contexts/UserContext";
+import FeedbackPage from "../components/service-card/FeedbackPage";
 
 const Auth0ProviderWithRedirectCallback = ({ children, ...props }) => {
   const navigate = useNavigate();
@@ -47,6 +48,10 @@ function RouteConfig() {
             <Route
               path="/profile"
               element={<PrivateRoute component={AddProfile} />}
+            />
+            <Route
+              path="/feedback"
+              element={<FeedbackPage />}
             />
           </Route>
         </Routes>
