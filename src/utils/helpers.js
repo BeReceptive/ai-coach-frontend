@@ -22,7 +22,7 @@ export const getTimeRange = () => {
 
 export const getTimeRangeForPastMeetings = () => {
   const currentDate = new Date();
-  const oneWeekAgo = new Date(currentDate.getTime() - 27 * 24 * 60 * 60 * 1000);
+  const oneWeekAgo = new Date(currentDate.getTime() - 2 * 24 * 60 * 60 * 1000);
   const threeHoursAgo = new Date(currentDate.getTime() - 1 * 60 * 60 * 1000);
   return {
     timeMin: oneWeekAgo.toISOString(),

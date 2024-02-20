@@ -2,7 +2,8 @@ import {
   saveFeedback,
   getFeedbacksByQuery,
 } from "../../services/feedback.service";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import "./feedback-modal.scss";
 import { Attendees, FeedbackForm } from "./FeedbackModal";
 
@@ -10,6 +11,42 @@ export default function FeedbackPage() {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [selectedAttendee, setSelectedAttendee] = useState(null);
   const [existingFeedbacks, setExistingFeedbacks] = useState([]);
+  const [meetingId, setMeetingId] = useState(null);
+  const [meeting, setMeeting] = useState(null);
+  const [user, setUser] = useState(null);
+  const [attendees, setAttendees] = useState([]);
+  const [isTokenDecoded, setIsTokenDecoded] = useState(false);
+
+  // get token from query params
+  const token = new URLSearchParams(window.location.search).get("token");
+  useEffect(() => {
+    const decodedToken = jwtDecode(token);
+    console.log("decodedToken: ", decodedToken);
+    const user = {
+      email: decodedToken?.email,
+    };
+    const meetingId = decodedToken?.meetingId;
+    const attendees = decodedToken?.meeting?.attendees;
+    const meeting = decodedToken?.meeting;
+    setMeeting(meeting);
+    setUser(user);
+    setMeetingId(meetingId);
+    setAttendees(attendees);
+    setIsTokenDecoded(true);
+  }, [token]);
+
+  useEffect(() => {
+    const getFeedbacks = async () => {
+      const feedbackParams = {
+        meetingId,
+      };
+      const response = await getFeedbacksByQuery(feedbackParams);
+      console.log("response2: ", response);
+      setExistingFeedbacks(response.data);
+    };
+    getFeedbacks();
+  }, [showFeedbackForm]);
+
   const onClick = (attendee) => {
     setShowFeedbackForm(true);
     setSelectedAttendee(attendee);
@@ -30,40 +67,35 @@ export default function FeedbackPage() {
 
   return (
     <>
-      <div className="w-screen">
-        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:p-6 w-full">
-            {showFeedbackForm ? (
-              <FeedbackForm
-                user={{ email: "user.email@gmail.com" }}
-                meetingId={"meeting-id"}
-                meeting={{
-                  start: { dateTime: "2020-01-01", timeZone: "timezone" },
-                  end: { dateTime: "2020-01-01" },
-                  status: "Meeting Status",
-                }}
-                attendee={{ name: "Attendee Name", email: "Attendee Email" }}
-                onClose={() => {
-                  setShowFeedbackForm(false);
-                }}
-              />
-            ) : (
-              <Attendees
-                attendees={[{ name: "Attendee Name", email: "Attendee Email" }]}
-                user={{ email: "user.email@gmail.com" }}
-                feedbacks={[]}
-                meetingId={"meeting-id"}
-                meeting={{
-                  start: { dateTime: "2020-01-01", timeZone: "timezone" },
-                  end: { dateTime: "2020-01-01" },
-                  status: "Meeting Status",
-                }}
-                onClick={onClick}
-              />
-            )}
+      {isTokenDecoded && (
+        <div className="w-screen">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:p-6 w-full">
+              {showFeedbackForm ? (
+                <FeedbackForm
+                  user={user}
+                  meetingId={meetingId}
+                  meeting={meeting}
+                  attendee={selectedAttendee}
+                  // attendee={user}
+                  onClose={() => {
+                    setShowFeedbackForm(false);
+                  }}
+                />
+              ) : (
+                <Attendees
+                  attendees={attendees}
+                  user={user}
+                  feedbacks={existingFeedbacks}
+                  meetingId={meetingId}
+                  meeting={meeting}
+                  onClick={onClick}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

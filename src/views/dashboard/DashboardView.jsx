@@ -92,11 +92,15 @@ export default function DashboardView() {
           params.code = localStorage.getItem("googleCode");
         const googleEvents = await GetGoogleCalendarEvents(params);
         setEvents(googleEvents?.data?.data);
+        break;
       case "microsoft":
         if (tokenObj) params.accessToken = tokenObj;
         const microsoftEvents = await GetMicrosoftCalendarEvents(params);
         console.log("responseeee: ", microsoftEvents);
-      // setEvents(microsoftEvents?.data?.value);
+        // setEvents(microsoftEvents?.data?.value);
+        break;
+      default:
+        break;
     }
   };
 
