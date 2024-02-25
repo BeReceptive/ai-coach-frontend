@@ -213,7 +213,7 @@ export default function Header() {
               <div className="mt-2 flex items-center text-md text-white font-semibold">
               <Link to="#">Coach Insights</Link>
               </div>
-              <div
+              {/* <div
                 onClick={handleIntegrationWithMicrosoftCalendar}
                 // onClick={
                 // handleIntegrationWithGoogleCalendar
@@ -221,7 +221,7 @@ export default function Header() {
                 className="mt-2 flex items-center text-md text-white font-semibold"
               >
                 Integrate with Microsoft Calendar
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

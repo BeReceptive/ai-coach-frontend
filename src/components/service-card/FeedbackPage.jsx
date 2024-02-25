@@ -20,19 +20,21 @@ export default function FeedbackPage() {
   // get token from query params
   const token = new URLSearchParams(window.location.search).get("token");
   useEffect(() => {
-    const decodedToken = jwtDecode(token);
-    console.log("decodedToken: ", decodedToken);
-    const user = {
-      email: decodedToken?.email,
-    };
-    const meetingId = decodedToken?.meetingId;
-    const attendees = decodedToken?.meeting?.attendees;
-    const meeting = decodedToken?.meeting;
-    setMeeting(meeting);
-    setUser(user);
-    setMeetingId(meetingId);
-    setAttendees(attendees);
-    setIsTokenDecoded(true);
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      console.log("decodedToken: ", decodedToken);
+      const user = {
+        email: decodedToken?.email,
+      };
+      const meetingId = decodedToken?.meetingId;
+      const attendees = decodedToken?.meeting?.attendees;
+      const meeting = decodedToken?.meeting;
+      setMeeting(meeting);
+      setUser(user);
+      setMeetingId(meetingId);
+      setAttendees(attendees);
+      setIsTokenDecoded(true);
+    }
   }, [token]);
 
   useEffect(() => {

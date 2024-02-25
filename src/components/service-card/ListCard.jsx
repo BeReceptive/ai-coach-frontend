@@ -30,7 +30,7 @@ export default function ListCard() {
         timeMin: timeMin,
         timeMax: timeMax,
         code: localStorage.getItem("googleCode"),
-        type: "past eventssss",
+        type: "past events",
       };
       const response = await GetGoogleCalendarEvents(params);
       if (response?.status) {
