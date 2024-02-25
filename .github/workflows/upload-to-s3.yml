@@ -16,7 +16,7 @@ jobs:
     - name: Set Up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 14
     
     - name: Set CI to false
       run: echo "CI=false" >> $GITHUB_ENV
@@ -25,7 +25,9 @@ jobs:
       run: npm install
 
     - name: List Build Directory Contents
-      run: ls -R build
+      run: |
+        pwd
+        ls -R
 
     - name: Build
       run: npm run build
