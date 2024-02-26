@@ -34,7 +34,13 @@ export default function ListCard() {
       };
       const response = await GetGoogleCalendarEvents(params);
       if (response?.status) {
-        setPastMeetings(response?.data?.data);
+        const currentTime = new Date();
+        const timezoneOffset = -currentTime.getTimezoneOffset() / 60; // Get timezone offset in hours
+        const formattedTime = `${currentTime.getFullYear()}-${String(currentTime.getMonth() + 1).padStart(2, '0')}-${String(currentTime.getDate()).padStart(2, '0')}T${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}:${String(currentTime.getSeconds()).padStart(2, '0')}+${String(timezoneOffset).padStart(2, '0')}:00`;
+        const filteredMeetings = response?.data?.data.filter((meeting) => {
+          return formattedTime > meeting?.end?.dateTime;
+        });
+        setPastMeetings(filteredMeetings);
       }
       setLoading(false);
     }, 500),
