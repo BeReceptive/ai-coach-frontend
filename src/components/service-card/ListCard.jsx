@@ -7,6 +7,7 @@ import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import FeedbackModal from "./FeedbackModal";
 import userIcon from "../../assets/images/user.png";
 import { getTimeRangeForPastMeetings } from "../../utils/helpers";
+import { GetMicrosoftCalendarEvents } from "../../services/microsoftCalendar.service";
 
 export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
@@ -32,15 +33,39 @@ export default function ListCard() {
         code: localStorage.getItem("googleCode"),
         type: "past events",
       };
-      const response = await GetGoogleCalendarEvents(params);
-      if (response?.status) {
-        const currentTime = new Date();
-        const timezoneOffset = -currentTime.getTimezoneOffset() / 60; // Get timezone offset in hours
-        const formattedTime = `${currentTime.getFullYear()}-${String(currentTime.getMonth() + 1).padStart(2, '0')}-${String(currentTime.getDate()).padStart(2, '0')}T${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}:${String(currentTime.getSeconds()).padStart(2, '0')}+${String(timezoneOffset).padStart(2, '0')}:00`;
-        const filteredMeetings = response?.data?.data.filter((meeting) => {
-          return formattedTime > meeting?.end?.dateTime;
-        });
-        setPastMeetings(filteredMeetings);
+      if (user?.sub?.includes("google-oauth2")) {
+        if (localStorage.getItem("googleCode"))
+          params.code = localStorage.getItem("googleCode");
+        const response = await GetGoogleCalendarEvents(params);
+        if (response?.status) {
+          const currentTime = new Date();
+          const timezoneOffset = -currentTime.getTimezoneOffset() / 60; // Get timezone offset in hours
+          const formattedTime = `${currentTime.getFullYear()}-${String(
+            currentTime.getMonth() + 1
+          ).padStart(2, "0")}-${String(currentTime.getDate()).padStart(
+            2,
+            "0"
+          )}T${String(currentTime.getHours()).padStart(2, "0")}:${String(
+            currentTime.getMinutes()
+          ).padStart(2, "0")}:${String(currentTime.getSeconds()).padStart(
+            2,
+            "0"
+          )}+${String(timezoneOffset).padStart(2, "0")}:00`;
+          const filteredMeetings = response?.data?.data.filter((meeting) => {
+            return formattedTime > meeting?.end?.dateTime;
+          });
+          setPastMeetings(filteredMeetings);
+        }
+      } else if (user?.sub?.includes("windowslive")) {
+        if (localStorage.getItem("microsoftToken"))
+          params.accessToken = JSON.parse(
+            localStorage.getItem("microsoftToken")
+          );
+        console.log("paramsss: ", params);
+        const response = await GetMicrosoftCalendarEvents(params);
+        if (response?.status) {
+          setPastMeetings(response?.data?.data);
+        }
       }
       setLoading(false);
     }, 500),
@@ -70,7 +95,7 @@ export default function ListCard() {
                     >
                       {/* {pastMeeting.title}{" "} */}
                       <span className={"text-indigo-600"}>
-                        {pastMeeting?.summary}
+                        {pastMeeting?.summary || pastMeeting?.subject}
                       </span>
                       {/* <span className={"text-indigo-600"}>{pastMeeting.position}</span> */}
                     </a>
@@ -102,7 +127,9 @@ export default function ListCard() {
                         <img
                           className="h-6 w-6 rounded-full bg-gray-50 ring-2 ring-white"
                           src={userIcon}
-                          alt={attendee?.email}
+                          alt={
+                            attendee?.email || attendee?.emailAddress?.address
+                          }
                         />
                       ) : (
                         ""
@@ -110,20 +137,24 @@ export default function ListCard() {
                     </dd>
                   ))}
                 </div>
-                <div className="flex w-25 gap-x-2.5">
-                  <button
-                    type="button"
-                    className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
-                    onClick={() => {
-                      setShowFeedbackModal(true);
-                      setSelectedMeeting(pastMeeting);
-                      setSelectedMeetingId(pastMeeting?.id);
-                      setSelectedMeetingAttendees(pastMeeting.attendees);
-                    }}
-                  >
-                    Give Feedback
-                  </button>
-                </div>
+                {pastMeeting?.attendees?.length > 0 ? (
+                  <div className="flex w-25 gap-x-2.5">
+                    <button
+                      type="button"
+                      className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                      onClick={() => {
+                        setShowFeedbackModal(true);
+                        setSelectedMeeting(pastMeeting);
+                        setSelectedMeetingId(pastMeeting?.id);
+                        setSelectedMeetingAttendees(pastMeeting?.attendees);
+                      }}
+                    >
+                      Give Feedback
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
               </dl>
             </li>
           ))}

@@ -11,8 +11,19 @@ export const AuthProvider = ({ children }) => {
 
   const code = new URLSearchParams(window.location.search).get("code");
   const scope = new URLSearchParams(window.location.search).get("scope");
-  if(code && scope && code !== null && scope !== null) {
+  if (code && scope && code !== null && scope !== null) {
     localStorage.setItem("googleCode", code);
+  }
+
+  const token = {};
+  const queryStringWithHash = window.location.hash.substring(1);
+  const query = new URLSearchParams(queryStringWithHash);
+  query.forEach((value, key) => {
+    token[key] = value;
+  });
+  if (Object.keys(token).length > 0) {
+    localStorage.setItem("microsoftToken", JSON.stringify(token));
+    console.log("tokenObjjjj2: ", Object.keys(token).length > 0 ? token : null);
   }
 
   useEffect(() => {
@@ -37,7 +48,8 @@ export const AuthProvider = ({ children }) => {
             }
           }
         } catch (error) {
-          console.error("UserContext: ", error);}
+          console.error("UserContext: ", error);
+        }
       }
     };
 

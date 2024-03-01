@@ -7,8 +7,8 @@ export const GetMicrosoftCalendarEvents = async (params) => {
 };
 
 export const getAuthUrl = () => {
-  const redirectUri = "http://localhost:3000/dashboard"; //process.env.MICROSOFT_CALENDAR_REDIRECT_URL;
-  const clientId = "62b11765-73c6-4502-85ec-e8951057124b"; //process.env.MICROSOFT_CALENDAR_CLIENT_ID;
+  const redirectUri = process.env.REACT_APP_MICROSOFT_CALENDAR_REDIRECT_URL;
+  const clientId = process.env.REACT_APP_MICROSOFT_CALENDAR_CLIENT_ID;
   const scope =
     "openid profile https://graph.microsoft.com/Calendars.Read https://graph.microsoft.com/Calendars.ReadWrite";
 

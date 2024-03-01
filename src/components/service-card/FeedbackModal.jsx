@@ -125,54 +125,61 @@ export function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
         </div>
       </div>
       <div className="attendees-list flex flex-col gap-1">
-        {attendees?.length && attendees
-          .filter(
-            (attendee) => search == null || attendee.email.includes(search)
-          )
-          .map((attendee) => (
-            <div className={"attendees-card flex align-center justify-between"}>
-              <div className="flex items-center">
-                <div className="px-2">
-                  <img
-                    className="h-10 w-10 rounded-full"
-                    src={userIcon}
-                    alt=""
-                  />
+        {attendees?.length &&
+          attendees
+            .filter(
+              (attendee) =>
+                search == null ||
+                attendee?.email?.includes(search) ||
+                attendee?.emailAddress?.name?.includes(search)
+            )
+            .map((attendee) => (
+              <div
+                className={"attendees-card flex align-center justify-between"}
+              >
+                <div className="flex items-center">
+                  <div className="px-2">
+                    <img
+                      className="h-10 w-10 rounded-full"
+                      src={userIcon}
+                      alt=""
+                    />
+                  </div>
+                  <div className="flex-col text-sm font-medium">
+                    <h3>{attendee?.name || attendee?.emailAddress?.name}</h3>
+                    <p>{attendee?.email || attendee?.emailAddress?.address}</p>
+                  </div>
                 </div>
-                <div className="flex-col text-sm font-medium">
-                  <h3>{attendee?.name}</h3>
-                  <p>{attendee?.email}</p>
-                </div>
-              </div>
-              <div className="w-25 gap-x-2.5 justify-self-end self-center">
-                <button
-                  type="button"
-                  className="theme-btn-round px-2 py-1 text-sm "
-                  onClick={() => onClick(attendee)}
-                  disabled={
-                    attendee.email == user.email ||
-                    feedbacks.filter(
-                      (feedback) =>
-                        feedback?.meeting?.meetingId == meetingId &&
-                        feedback.givenBy == user.email &&
-                        feedback.givenTo == attendee.email
-                    ).length > 0
-                  }
-                >
-                  {attendee.email == user.email
-                    ? "Self"
-                    : feedbacks.filter(
+                <div className="w-25 gap-x-2.5 justify-self-end self-center">
+                  <button
+                    type="button"
+                    className="theme-btn-round px-2 py-1 text-sm "
+                    onClick={() => onClick(attendee)}
+                    disabled={
+                      attendee.email == user.email ||
+                      feedbacks.filter(
                         (feedback) =>
                           feedback?.meeting?.meetingId == meetingId &&
                           feedback.givenBy == user.email &&
-                          feedback.givenTo == attendee.email
+                          (feedback.givenTo == attendee.email ||
+                            feedback.givenTo == attendee.emailAddress?.address)
                       ).length > 0
-                    ? "Submitted"
-                    : "Give Feedback"}
-                </button>
+                    }
+                  >
+                    {attendee.email == user.email
+                      ? "Self"
+                      : feedbacks.filter(
+                          (feedback) =>
+                            feedback?.meeting?.meetingId == meetingId &&
+                            feedback.givenBy == user.email &&
+                            feedback.givenTo == attendee.email
+                        ).length > 0
+                      ? "Submitted"
+                      : "Give Feedback"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
       </div>
     </>
   );
@@ -184,12 +191,12 @@ export function FeedbackForm({ user, meetingId, meeting, attendee, onClose }) {
   const giveFeedback = async () => {
     const feedbackObj = {
       givenBy: user.email,
-      givenTo: attendee.email,
+      givenTo: attendee?.email || attendee?.emailAddress?.address,
       meetingId,
-      meetingStart: meeting.start.dateTime,
-      meetingEnd: meeting.end.dateTime,
-      meetingTimezone: meeting.start.timeZone,
-      meetingStatus: meeting.status,
+      meetingStart: meeting?.start?.dateTime,
+      meetingEnd: meeting?.end?.dateTime,
+      meetingTimezone: meeting?.start?.timeZone,
+      meetingStatus: meeting?.status || "confirmed",
       feedback,
     };
     try {
@@ -211,7 +218,7 @@ export function FeedbackForm({ user, meetingId, meeting, attendee, onClose }) {
           <img className="h-10 w-10 rounded-full" src={userIcon} alt="" />
         </div>
         <div className="flex-auto">
-          <div>{attendee.name}</div>
+          <div>{attendee?.email || attendee?.emailAddress?.address}</div>
           <textarea
             rows={14}
             name="feedback"

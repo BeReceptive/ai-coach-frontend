@@ -23,29 +23,24 @@ export default function DashboardView() {
   const { isLoading, user } = useAuth0();
   const [tokenObj, setTokenObj] = useState(null);
 
-  useEffect(() => {
-    const token = {};
-    const queryStringWithHash = window.location.hash.substring(1);
-    const query = new URLSearchParams(queryStringWithHash);
-    query.forEach((value, key) => {
-      token[key] = value;
-    });
-    console.log("tokenObjjjj1: ", token);
-    if (Object.keys(token).length > 0) {
-      //   console.log("tokenObjjjj2: ", token);
-      console.log(
-        "tokenObjjjj2: ",
-        Object.keys(token).length > 0 ? token : null
-      );
-      setTokenObj(token);
-    }
-    console.log("tokenObjjjj3: ", token);
-  }, []);
-
-  const code = new URLSearchParams(window.location.search);
-  code.forEach((value, key) => {
-    console.log("codeee: ", value, key);
-  });
+  // useEffect(() => {
+  //   const token = {};
+  //   const queryStringWithHash = window.location.hash.substring(1);
+  //   const query = new URLSearchParams(queryStringWithHash);
+  //   query.forEach((value, key) => {
+  //     token[key] = value;
+  //   });
+  //   console.log("tokenObjjjj1: ", token);
+  //   if (Object.keys(token).length > 0) {
+  //     //   console.log("tokenObjjjj2: ", token);
+  //     console.log(
+  //       "tokenObjjjj2: ",
+  //       Object.keys(token).length > 0 ? token : null
+  //     );
+  //     setTokenObj(token);
+  //   }
+  //   console.log("tokenObjjjj3: ", token);
+  // }, []);
 
   useEffect(() => {
     const CheckUserStatus = async (email) => {
@@ -59,10 +54,14 @@ export default function DashboardView() {
           const events = await getEvents("google");
           console.log("events: ", events);
         } else {
-          if (!response?.data?.data && !code && !isLoading)
+          if (!response?.data?.data && !code && !isLoading) {
             redirectToGoogleAuth();
+          }
         }
       } else if (user?.sub?.includes("windowslive")) {
+        const queryStringWithHash = window.location.hash.substring(1);
+        const query = new URLSearchParams(queryStringWithHash);
+        const accessToken = query.get("access_token");
         const response = await IsUserHasAccessToken({
           email: email,
           platform: "microsoft",
@@ -71,7 +70,9 @@ export default function DashboardView() {
           const events = await getEvents("microsoft");
           console.log("events: ", events);
         } else {
-          if (!response?.data?.data && !isLoading) redirectToMicrosoftAuth();
+          if (!response?.data?.data && !isLoading && !accessToken) {
+            redirectToMicrosoftAuth();
+          }
         }
       }
     };
@@ -94,10 +95,13 @@ export default function DashboardView() {
         setEvents(googleEvents?.data?.data);
         break;
       case "microsoft":
-        if (tokenObj) params.accessToken = tokenObj;
+        if (localStorage.getItem("microsoftToken"))
+          params.accessToken = JSON.parse(
+            localStorage.getItem("microsoftToken")
+          );
         const microsoftEvents = await GetMicrosoftCalendarEvents(params);
         console.log("responseeee: ", microsoftEvents);
-        // setEvents(microsoftEvents?.data?.value);
+        setEvents(microsoftEvents?.data?.data);
         break;
       default:
         break;

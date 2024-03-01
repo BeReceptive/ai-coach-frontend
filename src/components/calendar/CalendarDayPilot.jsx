@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 import "./Calendar"
+import { format } from "date-fns";
 
 const CalendarDayPilot = ({ events }) => {
   const [config, setConfig] = useState({
     viewType: "Week",
     headerDateFormat: "dddd dd",
   });
+  console.log("eventsssss: ", events);
   const calendarRef = useRef();
   useEffect(
     () =>
@@ -14,9 +16,9 @@ const CalendarDayPilot = ({ events }) => {
         ...config,
         events: events.map((event) => ({
           id: event.id,
-          text: event.summary,
-          start: event.start.dateTime,
-          end: event.end.dateTime,
+          text: event?.summary || event?.subject,
+          start: format(new Date(event?.start?.dateTime), "yyyy-MM-dd'T'HH:mm:ssxxx"),//event?.start?.dateTime,
+          end: format(new Date(event?.end?.dateTime), "yyyy-MM-dd'T'HH:mm:ssxxx"),//event?.end?.dateTime,
         })),
       }),
     [events]
