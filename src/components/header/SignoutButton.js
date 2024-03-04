@@ -10,18 +10,19 @@ function SignoutButton() {
     return classes.filter(Boolean).join(" ");
   }
 
+  const handleLogout = () => {
+    localStorage.clear();
+    logout({
+      returnTo: window.location.origin + "/dashboard",
+    });
+  };
+
   return (
     isAuthenticated && (
       <Menu.Item key={"Sign Out"}>
         {({ active }) => (
           <Link
-            onClick={() => {
-              logout({
-                logoutParams: {
-                  returnTo: window.location.origin + "/dashboard",
-                },
-              });
-            }}
+            onClick={handleLogout}
             to="/dashboard"
             className={classNames(
               active ? "bg-gray-100" : "",
