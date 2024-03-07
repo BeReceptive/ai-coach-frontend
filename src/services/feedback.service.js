@@ -10,3 +10,8 @@ export const getFeedbacksByQuery = async (params) => {
   const response = await GET(`${apiUrl.feedback}`, params);
   return response;
 };
+
+export const validateMeetingFeedback = async (meeting) => {
+  const response = await POST(`${apiUrl.feedback}/validate`, meeting);
+  return response;
+};

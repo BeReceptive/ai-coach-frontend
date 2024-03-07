@@ -1,6 +1,7 @@
 import {
   saveFeedback,
   getFeedbacksByQuery,
+  validateMeetingFeedback,
 } from "../../services/feedback.service";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -20,9 +21,16 @@ export default function FeedbackModal({
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [selectedAttendee, setSelectedAttendee] = useState(null);
   const [existingFeedbacks, setExistingFeedbacks] = useState([]);
-  const onClick = (attendee) => {
-    setShowFeedbackForm(true);
-    setSelectedAttendee(attendee);
+  const onClick = async (attendee) => {
+    const response = await validateMeetingFeedback(meeting);
+    if (response?.status) {
+      setShowFeedbackForm(true);
+      setSelectedAttendee(attendee);
+      return;
+    }
+    toast.error(response?.message || "Feedback can not be submitted.");
+    onClose();
+    return;
   };
   useEffect(() => {
     if (showFeedbackModal) {
@@ -202,9 +210,12 @@ export function FeedbackForm({ user, meetingId, meeting, attendee, onClose }) {
     try {
       const response = await saveFeedback(feedbackObj);
       if (response?.status) {
-        toast.success("Feedback submitted successfully");
+        toast.success(response?.status || "Feedback submitted successfully");
         onClose();
+        return;
       }
+      toast.error(response?.message || "Feedback can not be submitted.");
+      onClose();
     } catch (error) {
       const errorMsg = getErrorMessage(error);
       toast.error(errorMsg);

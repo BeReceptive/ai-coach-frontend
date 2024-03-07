@@ -8,6 +8,8 @@ import FeedbackModal from "./FeedbackModal";
 import userIcon from "../../assets/images/user.png";
 import { getTimeRangeForPastMeetings } from "../../utils/helpers";
 import { GetMicrosoftCalendarEvents } from "../../services/microsoftCalendar.service";
+import { validateMeetingFeedback } from "../../services/feedback.service";
+import { toast } from "react-toastify";
 
 export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
@@ -15,12 +17,13 @@ export default function ListCard() {
   const [loading, setLoading] = useState(false);
   const [selectedMeetingId, setSelectedMeetingId] = useState(null);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
   const { user } = useAuth0();
 
   useEffect(() => {
     fetchPastMeetings();
-  }, [user]);
+  }, [user, shouldUpdate]);
 
   const fetchPastMeetings = useCallback(
     debounce(async () => {
@@ -71,6 +74,20 @@ export default function ListCard() {
     }, 500),
     []
   );
+
+  const handleFeedbackSubmit = async (pastMeeting) => {
+    const response = await validateMeetingFeedback(pastMeeting);
+    if (response?.status) {
+      setShowFeedbackModal(true);
+      setSelectedMeeting(pastMeeting);
+      setSelectedMeetingId(pastMeeting?.id);
+      setSelectedMeetingAttendees(pastMeeting?.attendees);
+      return;
+    }
+    setShouldUpdate(!shouldUpdate);
+    toast.error(response?.message || "Feedback can not be submitted.");
+    return;
+  };
 
   const today = new Date();
   const month = today.toLocaleString("default", { month: "long" });
@@ -142,12 +159,7 @@ export default function ListCard() {
                     <button
                       type="button"
                       className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
-                      onClick={() => {
-                        setShowFeedbackModal(true);
-                        setSelectedMeeting(pastMeeting);
-                        setSelectedMeetingId(pastMeeting?.id);
-                        setSelectedMeetingAttendees(pastMeeting?.attendees);
-                      }}
+                      onClick={() => handleFeedbackSubmit(pastMeeting)}
                     >
                       Give Feedback
                     </button>
