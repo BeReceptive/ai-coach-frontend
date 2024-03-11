@@ -164,17 +164,18 @@ export function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
                     className="theme-btn-round px-2 py-1 text-sm "
                     onClick={() => onClick(attendee)}
                     disabled={
-                      attendee.email == user.email ||
+                      (attendee.email == user.email || attendee?.emailAddress?.address == user.email ||
                       feedbacks.filter(
                         (feedback) =>
                           feedback?.meeting?.meetingId == meetingId &&
                           feedback.givenBy == user.email &&
                           (feedback.givenTo == attendee.email ||
                             feedback.givenTo == attendee.emailAddress?.address)
-                      ).length > 0
+                      ).length > 0)
                     }
                   >
-                    {attendee.email == user.email
+                    {console.log("attandeee: ", attendee)}
+                    {(attendee.email == user.email || attendee?.emailAddress?.address == user.email)
                       ? "Self"
                       : feedbacks.filter(
                           (feedback) =>
