@@ -58,7 +58,7 @@ export default function DashboardView() {
             redirectToGoogleAuth();
           }
         }
-      } else if (user?.sub?.includes("windowslive")) {
+      } else if (user?.sub?.includes("windowslive") || user?.sub?.includes("waad")) {
         const queryStringWithHash = window.location.hash.substring(1);
         const query = new URLSearchParams(queryStringWithHash);
         const accessToken = query.get("access_token");

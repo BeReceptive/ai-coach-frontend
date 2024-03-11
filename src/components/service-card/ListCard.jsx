@@ -59,7 +59,7 @@ export default function ListCard() {
           });
           setPastMeetings(filteredMeetings);
         }
-      } else if (user?.sub?.includes("windowslive")) {
+      } else if (user?.sub?.includes("windowslive") || user?.sub?.includes("waad")) {
         if (localStorage.getItem("microsoftToken"))
           params.accessToken = JSON.parse(
             localStorage.getItem("microsoftToken")
