@@ -64,6 +64,8 @@ export default function ListCard() {
           params.accessToken = JSON.parse(
             localStorage.getItem("microsoftToken")
           );
+        if(localStorage.getItem("microsoftCode"))
+          params.code = localStorage.getItem("microsoftCode");
         console.log("paramsss: ", params);
         const response = await GetMicrosoftCalendarEvents(params);
         if (response?.status) {

@@ -58,10 +58,11 @@ export default function DashboardView() {
             redirectToGoogleAuth();
           }
         }
-      } else if (user?.sub?.includes("windowslive") || user?.sub?.includes("waad")) {
-        const queryStringWithHash = window.location.hash.substring(1);
-        const query = new URLSearchParams(queryStringWithHash);
-        const accessToken = query.get("access_token");
+      } else if (
+        user?.sub?.includes("windowslive") ||
+        user?.sub?.includes("waad")
+      ) {
+        const code = new URLSearchParams(window.location.search).get("code");
         const response = await IsUserHasAccessToken({
           email: email,
           platform: "microsoft",
@@ -70,7 +71,7 @@ export default function DashboardView() {
           const events = await getEvents("microsoft");
           console.log("events: ", events);
         } else {
-          if (!response?.data?.data && !isLoading && !accessToken) {
+          if (!response?.data?.data && !isLoading && !code) {
             redirectToMicrosoftAuth();
           }
         }
@@ -95,13 +96,18 @@ export default function DashboardView() {
         setEvents(googleEvents?.data?.data);
         break;
       case "microsoft":
-        if (localStorage.getItem("microsoftToken"))
-          params.accessToken = JSON.parse(
-            localStorage.getItem("microsoftToken")
-          );
-        const microsoftEvents = await GetMicrosoftCalendarEvents(params);
-        console.log("responseeee: ", microsoftEvents);
-        setEvents(microsoftEvents?.data?.data);
+        if (localStorage.getItem("microsoftCode"))
+          params.code = localStorage.getItem("microsoftCode");
+        try {
+          const microsoftEvents = await GetMicrosoftCalendarEvents(params);
+          console.log("responseeee: ", microsoftEvents);
+          setEvents(microsoftEvents?.data?.data);
+        } catch (error) {
+          if(error.response.status === 401) {
+            redirectToMicrosoftAuth();
+          }
+          console.log("errorrrrr: ", error);
+        }
         break;
       default:
         break;

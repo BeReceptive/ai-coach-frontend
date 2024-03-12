@@ -14,6 +14,10 @@ export const AuthProvider = ({ children }) => {
   if (code && scope && code !== null && scope !== null) {
     localStorage.setItem("googleCode", code);
   }
+  if(code && code !== null && scope === null) {
+    localStorage.setItem("microsoftCode", code);
+  }
+
 
   const token = {};
   const queryStringWithHash = window.location.hash.substring(1);

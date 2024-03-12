@@ -108,12 +108,13 @@ export default function FeedbackModal({
   );
 }
 
-export function Attendees({ user, attendees, feedbacks, meetingId, onClick }) {
+export function Attendees({ user, attendees, feedbacks, meetingId, meeting, onClick }) {
   const [search, setSearch] = useState(null);
   return (
     <>
       <div className="mb-2 attendees">
         <h3 className={"sub-heading"}>Profile</h3>
+        <h3>{meeting?.subject || meeting?.summary}</h3>
         <p className={"des"}>This information will be displayed publicy</p>
         <label
           htmlFor="name"
