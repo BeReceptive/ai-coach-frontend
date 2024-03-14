@@ -77,7 +77,7 @@ export default function ServiceCard() {
                   </p>
                   <p className="text-sm text-gray-500 text-left">
                     <a href="#" className="hover:underline">
-                      {formatDate(coachInsight?.createdAt)}
+                      {formatDate(coachInsight?.createdAt + 'Z')}
                     </a>
                   </p>
                 </div>

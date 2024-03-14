@@ -17,8 +17,8 @@ const CalendarDayPilot = ({ events }) => {
         events: events.map((event) => ({
           id: event.id,
           text: event?.summary || event?.subject,
-          start: format(new Date(event?.start?.dateTime), "yyyy-MM-dd'T'HH:mm:ssxxx"),//event?.start?.dateTime,
-          end: format(new Date(event?.end?.dateTime), "yyyy-MM-dd'T'HH:mm:ssxxx"),//event?.end?.dateTime,
+          start: format(new Date(event?.start?.dateTime + 'Z'), "yyyy-MM-dd'T'HH:mm:ss"),//event?.start?.dateTime,
+          end: format(new Date(event?.end?.dateTime + 'Z'), "yyyy-MM-dd'T'HH:mm:ss"),//event?.end?.dateTime,
         })),
       }),
     [events]
