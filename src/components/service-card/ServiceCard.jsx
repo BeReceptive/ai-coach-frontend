@@ -43,7 +43,7 @@ export default function ServiceCard() {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
-      timeZone: "UTC",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
     const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
       date

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 import "./Calendar"
 import { format } from "date-fns";
+import moment from "moment-timezone";
 
 const CalendarDayPilot = ({ events }) => {
   const [config, setConfig] = useState({
@@ -10,6 +11,7 @@ const CalendarDayPilot = ({ events }) => {
   });
   console.log("eventsssss: ", events);
   const calendarRef = useRef();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   useEffect(
     () =>
       setConfig({
@@ -17,8 +19,8 @@ const CalendarDayPilot = ({ events }) => {
         events: events.map((event) => ({
           id: event.id,
           text: event?.summary || event?.subject,
-          start: format(new Date(event?.start?.dateTime), "yyyy-MM-dd'T'HH:mm:ssxxx"),//event?.start?.dateTime,
-          end: format(new Date(event?.end?.dateTime), "yyyy-MM-dd'T'HH:mm:ssxxx"),//event?.end?.dateTime,
+          start: moment.utc(event?.start?.dateTime).clone().tz(timeZone).format("YYYY-MM-DD HH:mm:ss"),//event?.start?.dateTime,
+          end: moment.utc(event?.end?.dateTime).clone().tz(timeZone).format("YYYY-MM-DD HH:mm:ss"),//event?.end?.dateTime,
         })),
       }),
     [events]
