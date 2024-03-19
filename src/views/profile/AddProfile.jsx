@@ -27,11 +27,11 @@ const teams = [
   { id: 3, name: "Tailwind Labs", href: "#", initial: "T", current: false },
 ];
 const secondaryNavigation = [
-  { name: "Account", href: "#", current: true },
-  { name: "Notifications", href: "#", current: false },
-  { name: "Billing", href: "#", current: false },
-  { name: "Teams", href: "#", current: false },
-  { name: "Integrations", href: "#", current: false },
+  // { name: "Account", href: "#", current: true },
+  // { name: "Notifications", href: "#", current: false },
+  // { name: "Billing", href: "#", current: false },
+  // { name: "Teams", href: "#", current: false },
+  // { name: "Integrations", href: "#", current: false },
 ];
 
 function classNames(...classes) {

@@ -5,18 +5,33 @@ export const getErrorMessage = (error) => {
   return "Something went wrong";
 };
 
-
 export const getTimeRange = () => {
   const now = new Date();
   const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-  // const firstDayOfWeek = new Date(now.setDate(1));
-
+  const timeMin = new Date(
+    firstDayOfWeek.getFullYear(),
+    firstDayOfWeek.getMonth(),
+    firstDayOfWeek.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
   const lastDayOfWeek = new Date(firstDayOfWeek);
   lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+  const timeMax = new Date(
+    lastDayOfWeek.getFullYear(),
+    lastDayOfWeek.getMonth(),
+    lastDayOfWeek.getDate(),
+    23,
+    59,
+    59,
+    999
+  );
   // lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 14);
   return {
-    timeMin: firstDayOfWeek.toISOString(),
-    timeMax: lastDayOfWeek.toISOString(),
+    timeMin,
+    timeMax,
   };
 };
 
@@ -27,4 +42,4 @@ export const getTimeRangeForPastMeetings = () => {
     timeMin: halfHourAgo.toISOString(),
     timeMax: currentTime.toISOString(),
   };
-}
+};
