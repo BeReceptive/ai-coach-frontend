@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import ReactGA from "react-ga4";
 import { Link } from "react-router-dom";
 
 import SignoutButton from "./SignoutButton";
@@ -39,6 +40,15 @@ export default function Header() {
   console.log("userrrrrr: ", user);
 
   const {authUser} = useAuth();
+
+  const handleClick = async (item) => {
+    ReactGA.event({
+      category: "User",
+      action: "Clicked on " + item.name,
+      label: item.name,
+    });
+    console.log("item: ", item);
+  }
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
     const authUrl = getAuthUrl();
@@ -128,6 +138,7 @@ export default function Header() {
                             <Menu.Item key={item.name}>
                               {({ active }) => (
                                 <a
+                                onClick={() => handleClick(item)}
                                   href={item.href}
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
