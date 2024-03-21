@@ -17,15 +17,15 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 16
-    
-    - name: Set CI to false
-      run: echo "CI=false" >> ${{ secrets.ENV }}
 
     - name: create env file
       run: |
         touch .env
         echo ENV=${{ secrets.ENV }} >> .env
     
+    - name: Set CI to false
+      run: echo "CI=false" >> $ENV
+      
     - name: Install Dependencies
       run: npm install
 
