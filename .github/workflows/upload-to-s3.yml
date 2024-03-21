@@ -20,11 +20,8 @@ jobs:
 
     - name: create env file
       run: |
-        touch .env
-        echo ENV=${{ secrets.ENV }} >> .env
-    
-    - name: Set CI to false
-      run: echo "CI=false" >> $ENV
+        echo "${{ secrets.ENV }}" > .env
+        echo "CI=false" >> .env
       
     - name: Install Dependencies
       run: npm install
