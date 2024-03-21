@@ -17,12 +17,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 16
-
-    - name: create env file
-      run: |
-        echo "ENV=${{ secrets.ENV }}" > .env
-        echo "CI=false" >> .env
-      
+    
+    - name: Set CI to false
+      run: echo "CI=false" >> $GITHUB_ENV
+    
     - name: Install Dependencies
       run: npm install
 
@@ -30,7 +28,6 @@ jobs:
       run: |
         pwd
         ls -l
-
     - name: Build
       run: npm run build
 
