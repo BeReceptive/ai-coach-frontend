@@ -20,7 +20,7 @@ jobs:
 
     - name: create env file
       run: |
-        echo "${{ secrets.ENV }}" > .env
+        echo "ENV=${{ secrets.ENV }}" > .env
         echo "CI=false" >> .env
       
     - name: Install Dependencies
