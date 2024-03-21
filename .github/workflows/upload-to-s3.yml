@@ -20,11 +20,6 @@ jobs:
     
     - name: Set CI to false
       run: echo "CI=false" >> $GITHUB_ENV
-
-    - name: Create .env file
-      run: |
-         echo "CI=false" > .env
-         echo "ENV=${{ secrets.ENV }}" >> .env
     
     - name: Install Dependencies
       run: npm install
