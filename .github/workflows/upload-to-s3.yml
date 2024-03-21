@@ -19,7 +19,7 @@ jobs:
         node-version: 16
     
     - name: Set CI to false
-      run: echo "CI=false" >> $GITHUB_ENV
+      run: echo "CI=false" >> ${{ secrets.ENV }}
 
     - name: create env file
       run: |
