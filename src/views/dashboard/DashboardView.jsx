@@ -1,46 +1,24 @@
-import React, { useEffect, useState } from "react";
-import ShortCalendar from "../../components/calendar/ShortCalendar";
+import React, { useContext, useEffect, useState } from "react";
 import ServiceCard from "../../components/service-card/ServiceCard";
 import ListCard from "../../components/service-card/ListCard";
-import CalendarS from "../../components/calendar/CalendarS";
 import CalendarDayPilot from "../../components/calendar/CalendarDayPilot";
 import { useAuth0 } from "@auth0/auth0-react";
 import {
-  GetGoogleAuthConfig,
   GetGoogleCalendarEvents,
   redirectToGoogleAuth,
 } from "../../services/googleCalendar.service";
 import { IsUserHasAccessToken } from "../../services/user.service";
 import {
   GetMicrosoftCalendarEvents,
-  getAuthUrl,
   redirectToMicrosoftAuth,
 } from "../../services/microsoftCalendar.service";
 import { getTimeRange } from "../../utils/helpers";
+import { useAuth } from "../../contexts/UserContext";
 
 export default function DashboardView() {
+  const {authUser} = useAuth();
   const [events, setEvents] = useState([]);
   const { isLoading, user } = useAuth0();
-  const [tokenObj, setTokenObj] = useState(null);
-
-  // useEffect(() => {
-  //   const token = {};
-  //   const queryStringWithHash = window.location.hash.substring(1);
-  //   const query = new URLSearchParams(queryStringWithHash);
-  //   query.forEach((value, key) => {
-  //     token[key] = value;
-  //   });
-  //   console.log("tokenObjjjj1: ", token);
-  //   if (Object.keys(token).length > 0) {
-  //     //   console.log("tokenObjjjj2: ", token);
-  //     console.log(
-  //       "tokenObjjjj2: ",
-  //       Object.keys(token).length > 0 ? token : null
-  //     );
-  //     setTokenObj(token);
-  //   }
-  //   console.log("tokenObjjjj3: ", token);
-  // }, []);
 
   useEffect(() => {
     const CheckUserStatus = async (email) => {
@@ -78,7 +56,14 @@ export default function DashboardView() {
       }
     };
     CheckUserStatus(user?.email);
-  }, []);
+  }, [user, isLoading, authUser]);
+
+  const removeQueryParams = () => {
+    if (window.location.search) {
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  };
 
   const getEvents = async (platform) => {
     const { timeMin, timeMax } = getTimeRange();
@@ -93,6 +78,7 @@ export default function DashboardView() {
         if (localStorage.getItem("googleCode"))
           params.code = localStorage.getItem("googleCode");
         const googleEvents = await GetGoogleCalendarEvents(params);
+        removeQueryParams();
         setEvents(googleEvents?.data?.data);
         break;
       case "microsoft":
@@ -100,10 +86,10 @@ export default function DashboardView() {
           params.code = localStorage.getItem("microsoftCode");
         try {
           const microsoftEvents = await GetMicrosoftCalendarEvents(params);
-          console.log("responseeee: ", microsoftEvents);
+          removeQueryParams();
           setEvents(microsoftEvents?.data?.data);
         } catch (error) {
-          if(error.response.status === 401) {
+          if (error.response.status === 401) {
             redirectToMicrosoftAuth();
           }
           console.log("errorrrrr: ", error);
@@ -116,7 +102,6 @@ export default function DashboardView() {
 
   return (
     <div>
-      {console.log("tokenObjjjj4: ", tokenObj)}
       <div className="container mx-auto">
         <div className="flex gap-10">
           <div>

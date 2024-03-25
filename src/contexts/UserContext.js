@@ -9,26 +9,21 @@ export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  const code = new URLSearchParams(window.location.search).get("code");
-  const scope = new URLSearchParams(window.location.search).get("scope");
-  if (code && scope && code !== null && scope !== null) {
-    localStorage.setItem("googleCode", code);
-  }
-  if(code && code !== null && scope === null) {
-    localStorage.setItem("microsoftCode", code);
-  }
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    const scope = urlParams.get("scope");
 
+    if (code && scope) {
+      localStorage.setItem("googleCode", code);
+      // const newUrl = window.location.origin + window.location.pathname;
+      // window.location.replace(newUrl);
+    }
 
-  const token = {};
-  const queryStringWithHash = window.location.hash.substring(1);
-  const query = new URLSearchParams(queryStringWithHash);
-  query.forEach((value, key) => {
-    token[key] = value;
-  });
-  if (Object.keys(token).length > 0) {
-    localStorage.setItem("microsoftToken", JSON.stringify(token));
-    console.log("tokenObjjjj2: ", Object.keys(token).length > 0 ? token : null);
-  }
+    if (code && scope === null) {
+      localStorage.setItem("microsoftCode", code);
+    }
+  }, []);
 
   useEffect(() => {
     const handleUserSignup = async () => {
@@ -38,18 +33,21 @@ export const AuthProvider = ({ children }) => {
             name: user?.name,
             email: user?.email,
             imageUrl: user?.picture,
+            platform: user?.sub.includes("google-oauth2")
+              ? "google"
+              : "microsoft",
+            code: user?.sub.includes("google-oauth2")
+              ? localStorage.getItem("googleCode")
+              : localStorage.getItem("microsoftCode"),
           };
-          if (user) {
-            const response = await saveUser(userPayload);
-            console.log("UserContext: ", response?.data?.data, response);
-            if (response.status) {
-              // Set the user data in your context
-              setAuthUser({
-                ...response?.data?.data,
-              });
-            } else {
-              // Handle the error
-            }
+          const response = await saveUser(userPayload);
+          if (response.status) {
+            // Set the user data in your context
+            setAuthUser({
+              ...response?.data?.data,
+            });
+          } else {
+            // Handle the error
           }
         } catch (error) {
           console.error("UserContext: ", error);
