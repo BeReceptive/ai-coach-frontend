@@ -16,7 +16,7 @@ import { getTimeRange } from "../../utils/helpers";
 import { useAuth } from "../../contexts/UserContext";
 
 export default function DashboardView() {
-  const {authUser} = useAuth();
+  const { authUser } = useAuth();
   const [events, setEvents] = useState([]);
   const { isLoading, user } = useAuth0();
 
@@ -30,11 +30,8 @@ export default function DashboardView() {
         });
         if (response?.data?.data) {
           const events = await getEvents("google");
-          console.log("events: ", events);
-        } else {
-          if (!response?.data?.data && !code && !isLoading) {
-            redirectToGoogleAuth();
-          }
+        } else if (!response?.data?.data && !code && !isLoading) {
+          redirectToGoogleAuth();
         }
       } else if (
         user?.sub?.includes("windowslive") ||
@@ -47,7 +44,6 @@ export default function DashboardView() {
         });
         if (response?.data?.data) {
           const events = await getEvents("microsoft");
-          console.log("events: ", events);
         } else {
           if (!response?.data?.data && !isLoading && !code) {
             redirectToMicrosoftAuth();

@@ -39,7 +39,6 @@ export default function FeedbackModal({
           meetingId,
         };
         const response = await getFeedbacksByQuery(feedbackParams);
-        console.log("response2: ", response);
         setExistingFeedbacks(response.data);
       };
       getFeedbacks();

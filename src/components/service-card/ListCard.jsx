@@ -10,6 +10,8 @@ import { getTimeRangeForPastMeetings } from "../../utils/helpers";
 import { GetMicrosoftCalendarEvents } from "../../services/microsoftCalendar.service";
 import { validateMeetingFeedback } from "../../services/feedback.service";
 import { toast } from "react-toastify";
+import { IsUserHasAccessToken } from "../../services/user.service";
+import { useAuth } from "../../contexts/UserContext";
 
 export default function ListCard() {
   const [pastMeetings, setPastMeetings] = useState([]);
@@ -20,10 +22,29 @@ export default function ListCard() {
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [selectedMeetingAttendees, setSelectedMeetingAttendees] = useState([]);
   const { user } = useAuth0();
+  const { authUser } = useAuth();
+
+
+  const getFormattedCurrentTime = () => {
+    const currentTime = new Date();
+    const timezoneOffset = -currentTime.getTimezoneOffset() / 60; // Get timezone offset in hours
+    const formattedTime = `${currentTime.getFullYear()}-${String(
+      currentTime.getMonth() + 1
+    ).padStart(2, "0")}-${String(currentTime.getDate()).padStart(
+      2,
+      "0"
+    )}T${String(currentTime.getHours()).padStart(2, "0")}:${String(
+      currentTime.getMinutes()
+    ).padStart(2, "0")}:${String(currentTime.getSeconds()).padStart(
+      2,
+      "0"
+    )}+${String(timezoneOffset).padStart(2, "0")}:00`;
+    return formattedTime;
+  };
 
   useEffect(() => {
     fetchPastMeetings();
-  }, [user, shouldUpdate]);
+  }, [user, shouldUpdate, authUser]);
 
   const fetchPastMeetings = useCallback(
     debounce(async () => {
@@ -39,37 +60,38 @@ export default function ListCard() {
       if (user?.sub?.includes("google-oauth2")) {
         if (localStorage.getItem("googleCode"))
           params.code = localStorage.getItem("googleCode");
-        const response = await GetGoogleCalendarEvents(params);
-        if (response?.status) {
-          const currentTime = new Date();
-          const timezoneOffset = -currentTime.getTimezoneOffset() / 60; // Get timezone offset in hours
-          const formattedTime = `${currentTime.getFullYear()}-${String(
-            currentTime.getMonth() + 1
-          ).padStart(2, "0")}-${String(currentTime.getDate()).padStart(
-            2,
-            "0"
-          )}T${String(currentTime.getHours()).padStart(2, "0")}:${String(
-            currentTime.getMinutes()
-          ).padStart(2, "0")}:${String(currentTime.getSeconds()).padStart(
-            2,
-            "0"
-          )}+${String(timezoneOffset).padStart(2, "0")}:00`;
-          const filteredMeetings = response?.data?.data.filter((meeting) => {
-            return formattedTime > meeting?.end?.dateTime;
-          });
-          setPastMeetings(filteredMeetings);
+        const response = await IsUserHasAccessToken({
+          email: user?.email,
+          platform: "google",
+          type: "past events",
+        });
+        if (response?.data?.data) {
+          const googleEvents = await GetGoogleCalendarEvents(params);
+          if (googleEvents?.status) {
+            const formattedTime = getFormattedCurrentTime();
+            const filteredMeetings = googleEvents?.data?.data.filter(
+              (meeting) => {
+                return formattedTime > meeting?.end?.dateTime;
+              }
+            );
+            setPastMeetings(filteredMeetings);
+          }
         }
-      } else if (user?.sub?.includes("windowslive") || user?.sub?.includes("waad")) {
-        if (localStorage.getItem("microsoftToken"))
-          params.accessToken = JSON.parse(
-            localStorage.getItem("microsoftToken")
-          );
-        if(localStorage.getItem("microsoftCode"))
+      } else if (
+        user?.sub?.includes("windowslive") ||
+        user?.sub?.includes("waad")
+      ) {
+        if (localStorage.getItem("microsoftCode"))
           params.code = localStorage.getItem("microsoftCode");
-        console.log("paramsss: ", params);
-        const response = await GetMicrosoftCalendarEvents(params);
-        if (response?.status) {
-          setPastMeetings(response?.data?.data);
+        const response = await IsUserHasAccessToken({
+          email: user?.email,
+          platform: "microsoft",
+        });
+        if (response?.data?.data) {
+          const microsoftEvents = await GetMicrosoftCalendarEvents(params);
+          if (microsoftEvents?.status) {
+            setPastMeetings(microsoftEvents?.data?.data);
+          }
         }
       }
       setLoading(false);

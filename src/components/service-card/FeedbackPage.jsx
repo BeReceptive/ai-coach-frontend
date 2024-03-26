@@ -22,7 +22,6 @@ export default function FeedbackPage() {
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
-      console.log("decodedToken: ", decodedToken);
       const user = {
         email: decodedToken?.email,
       };
@@ -43,7 +42,6 @@ export default function FeedbackPage() {
         meetingId,
       };
       const response = await getFeedbacksByQuery(feedbackParams);
-      console.log("response2: ", response);
       setExistingFeedbacks(response.data);
     };
     getFeedbacks();
@@ -60,7 +58,6 @@ export default function FeedbackPage() {
   //           meetingId,
   //         };
   //         const response = await getFeedbacksByQuery(feedbackParams);
-  //         console.log("response2: ", response);
   //         setExistingFeedbacks(response.data);
   //       };
   //       getFeedbacks();

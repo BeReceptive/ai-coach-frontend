@@ -9,7 +9,6 @@ const CalendarDayPilot = ({ events }) => {
     viewType: "Week",
     headerDateFormat: "dddd dd",
   });
-  console.log("eventsssss: ", events);
   const calendarRef = useRef();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   useEffect(

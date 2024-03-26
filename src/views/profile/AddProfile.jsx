@@ -41,7 +41,6 @@ function classNames(...classes) {
 export default function AddProfile() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const {authUser} = useAuth();
-  console.log("authUser: ", authUser)
 
   return (
     <>

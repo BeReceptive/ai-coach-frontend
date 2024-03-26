@@ -28,7 +28,6 @@ export default function ServiceCard() {
       };
       const response = await getFeedbacksByQuery(coachInsightParams);
       const res2 = await getCoachInsightsByQuery(coachInsightParams);
-      console.log("response2: ", res2);
       setCoachInsights(res2?.data);
       setFeedbacks(response?.data);
     };

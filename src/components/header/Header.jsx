@@ -37,7 +37,6 @@ function classNames(...classes) {
 export default function Header() {
   const { user } = useAuth0();
 
-  console.log("userrrrrr: ", user);
 
   const {authUser} = useAuth();
 
@@ -47,7 +46,6 @@ export default function Header() {
       action: "Clicked on " + item.name,
       label: item.name,
     });
-    console.log("item: ", item);
   }
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
