@@ -14,16 +14,21 @@ export const AuthProvider = ({ children }) => {
     const code = urlParams.get("code");
     const scope = urlParams.get("scope");
 
-    if (code && scope) {
+    if (code && scope && user?.sub.includes("google-oauth2")) {
       localStorage.setItem("googleCode", code);
       // const newUrl = window.location.origin + window.location.pathname;
       // window.location.replace(newUrl);
     }
 
-    if (code && scope === null) {
+    if (
+      (code &&
+        (scope === null || !scope) &&
+        user?.sub.includes("windowslive")) ||
+      user?.sub.includes("waad")
+    ) {
       localStorage.setItem("microsoftCode", code);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const handleUserSignup = async () => {
