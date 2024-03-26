@@ -220,7 +220,7 @@ export default function Header() {
               <Link to="/dashboard">Dashboard</Link>
               </div>
               <div className="mt-2 flex items-center text-md text-white font-semibold">
-              <Link to="#">Coach Insights</Link>
+              <Link to="/coach-insights">Coach Insights</Link>
               </div>
               {/* <div
                 onClick={handleIntegrationWithMicrosoftCalendar}

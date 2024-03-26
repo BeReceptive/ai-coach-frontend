@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import PrivateRoute from "../components/common/PrivateRoute";
 import DashboardView from "../views/dashboard/DashboardView";
+import CoachInsights from "../views/coachInsighnts/CoachInsights";
 import DashboardLayout from "../layout/DashboardLayout";
 import AddProfile from "../views/profile/AddProfile";
 import { AuthProvider } from "../contexts/UserContext";
@@ -44,6 +45,10 @@ function RouteConfig() {
             <Route
               path="/dashboard"
               element={<PrivateRoute component={DashboardView} />}
+            />
+            <Route
+              path="/coach-insights"
+              element={<PrivateRoute component={CoachInsights} />}
             />
             <Route
               path="/profile"

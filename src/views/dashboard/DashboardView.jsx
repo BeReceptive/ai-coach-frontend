@@ -118,7 +118,7 @@ export default function DashboardView() {
             {/* <h3 className={"text-black text-2xl text-left mb-3"}>
               Coach Insights
             </h3> */}
-            <ServiceCard />
+            <ServiceCard isDashboard={true} />
           </div>
         </div>
       </div>

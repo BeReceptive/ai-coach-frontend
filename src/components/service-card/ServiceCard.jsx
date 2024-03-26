@@ -16,7 +16,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ServiceCard() {
+export default function ServiceCard({ isDashboard }) {
   const { user } = useAuth0();
   const [feedbacks, setFeedbacks] = useState([]);
   const [coachInsights, setCoachInsights] = useState([]);
@@ -54,9 +54,11 @@ export default function ServiceCard() {
     <>
       {coachInsights.length > 0 ? (
         <>
-          <h3 className={"text-black text-2xl text-left mb-3"}>
-            Coach Insights
-          </h3>
+          {isDashboard && (
+            <h3 className={"text-black text-2xl text-left mb-3"}>
+              Coach Insights
+            </h3>
+          )}
           {coachInsights.map((coachInsight) => (
             <div className="bg-white px-4 py-5 sm:px-6">
               <div className="flex space-x-3">
