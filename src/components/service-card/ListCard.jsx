@@ -82,7 +82,11 @@ export default function ListCard() {
     if (response?.status) {
       setShowFeedbackModal(true);
       setSelectedMeeting(pastMeeting);
-      setSelectedMeetingId(pastMeeting?.id);
+      if (pastMeeting?.iCalUId !== undefined) {
+        setSelectedMeetingId(pastMeeting?.iCalUId);
+      } else {
+        setSelectedMeetingId(pastMeeting?.id);
+      }
       setSelectedMeetingAttendees(pastMeeting?.attendees);
       return;
     }
