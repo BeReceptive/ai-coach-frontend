@@ -13,6 +13,7 @@ export default function FeedbackPage() {
   const [existingFeedbacks, setExistingFeedbacks] = useState([]);
   const [meetingId, setMeetingId] = useState(null);
   const [meeting, setMeeting] = useState(null);
+  const [isFeedbackCycleExpired, setIsFeedbackCycleExpired] = useState(false);
   const [user, setUser] = useState(null);
   const [attendees, setAttendees] = useState([]);
   const [isTokenDecoded, setIsTokenDecoded] = useState(false);
@@ -22,6 +23,10 @@ export default function FeedbackPage() {
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
+      const expiryTimestampMilliseconds = decodedToken?.exp * 1000;
+      const currentTimestampMilliseconds = new Date().getTime();
+      const isExpired = currentTimestampMilliseconds > expiryTimestampMilliseconds;
+      setIsFeedbackCycleExpired(isExpired);
       const user = {
         email: decodedToken?.email,
       };
@@ -51,18 +56,20 @@ export default function FeedbackPage() {
     setShowFeedbackForm(true);
     setSelectedAttendee(attendee);
   };
-  //   useEffect(() => {
-  //     if (showFeedbackModal) {
-  //       const getFeedbacks = async () => {
-  //         const feedbackParams = {
-  //           meetingId,
-  //         };
-  //         const response = await getFeedbacksByQuery(feedbackParams);
-  //         setExistingFeedbacks(response.data);
-  //       };
-  //       getFeedbacks();
-  //     }
-  //   }, [showFeedbackModal]);
+
+  if(isFeedbackCycleExpired) {
+    return (
+      <div className="w-screen">
+        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:p-6 w-full">
+            <div className="text-center">
+              <h1 className="text-2xl text-red-500">Feedback cycle has expired</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
