@@ -9,7 +9,7 @@ import SignoutButton from "./SignoutButton";
 import { GetGoogleCalendarEvents } from "../../services/googleCalendar.service";
 import { saveUser } from "../../services/user.service";
 import LogoIcon from "../../assets/icons/defaultIcons";
-import logoText from "../../assets/images/Logo.png";
+import logoImg from "../../assets/images/Logo.png";
 import userIcon from "../../assets/images/user.png";
 import axios from "axios";
 
@@ -37,8 +37,7 @@ function classNames(...classes) {
 export default function Header() {
   const { user } = useAuth0();
 
-
-  const {authUser} = useAuth();
+  const { authUser } = useAuth();
 
   const handleClick = async (item) => {
     ReactGA.event({
@@ -46,7 +45,7 @@ export default function Header() {
       action: "Clicked on " + item.name,
       label: item.name,
     });
-  }
+  };
 
   const handleIntegrationWithMicrosoftCalendar = async () => {
     const authUrl = getAuthUrl();
@@ -95,19 +94,21 @@ export default function Header() {
                 <div className="flex items-center">
                   <div className="flex gap-2 2xl:h-90">
                     {/* <LogoIcon /> */}
-                    <img src={logoText} className={""} height={90} />
+                    <Link to="/dashboard">
+                      <img src={logoImg} className={""} height={90} />
+                    </Link>
                   </div>
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-4 flex items-center md:ml-6">
-                    <button
+                    {/* <button
                       type="button"
                       className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </button> */}
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-3">
@@ -136,7 +137,7 @@ export default function Header() {
                             <Menu.Item key={item.name}>
                               {({ active }) => (
                                 <a
-                                onClick={() => handleClick(item)}
+                                  onClick={() => handleClick(item)}
                                   href={item.href}
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
@@ -186,14 +187,14 @@ export default function Header() {
                       {user?.email}
                     </div>
                   </div>
-                  <button
+                  {/* <button
                     type="button"
                     className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">View notifications</span>
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
+                  </button> */}
                 </div>
                 <div className="mt-3 space-y-1 px-2">
                   {userNavigation.map((item) => (
@@ -217,10 +218,10 @@ export default function Header() {
           <div className="min-w-0 flex-1">
             <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-12">
               <div className="mt-2 flex items-center text-md text-white font-semibold">
-              <Link to="/dashboard">Dashboard</Link>
+                <Link to="/dashboard">Dashboard</Link>
               </div>
               <div className="mt-2 flex items-center text-md text-white font-semibold">
-              <Link to="/coach-insights">Coach Insights</Link>
+                <Link to="/coach-insights">Coach Insights</Link>
               </div>
               {/* <div
                 onClick={handleIntegrationWithMicrosoftCalendar}

@@ -34,16 +34,29 @@ export const AuthProvider = ({ children }) => {
     const handleUserSignup = async () => {
       if (isAuthenticated && user) {
         try {
+          let code = "";
+          if (user?.sub.includes("google-oauth2"))
+            code = localStorage.getItem("googleCode") || "";
+          if (user?.sub.includes("windowslive") || user?.sub.includes("waad"))
+            code = localStorage.getItem("microsoftCode") || "";
+          if (!user?.given_name || !user?.family_name) {
+            let firstSpaceIndex = user?.name.indexOf(" ");
+            let firstName = user?.name.substring(0, firstSpaceIndex);
+            let lastName = user?.name.substring(firstSpaceIndex + 1);
+            user.given_name = firstName;
+            user.family_name = lastName;
+          }
+
           const userPayload = {
             name: user?.name,
+            firstName: user?.given_name || "",
+            lastName: user?.family_name || "",
             email: user?.email,
             imageUrl: user?.picture,
             platform: user?.sub.includes("google-oauth2")
               ? "google"
               : "microsoft",
-            code: user?.sub.includes("google-oauth2")
-              ? localStorage.getItem("googleCode")
-              : localStorage.getItem("microsoftCode"),
+            code: code,
           };
           const response = await saveUser(userPayload);
           if (response.status) {

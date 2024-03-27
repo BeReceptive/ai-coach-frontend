@@ -18,18 +18,20 @@ function classNames(...classes) {
 
 export default function ServiceCard({ isDashboard }) {
   const { user } = useAuth0();
-  const [feedbacks, setFeedbacks] = useState([]);
+  // const [feedbacks, setFeedbacks] = useState([]);
   const [coachInsights, setCoachInsights] = useState([]);
 
   useEffect(() => {
     const getFeedbacks = async () => {
       const coachInsightParams = {
         givenTo: user?.email,
+        limit: isDashboard ? 1 : 100,
       };
-      const response = await getFeedbacksByQuery(coachInsightParams);
-      const res2 = await getCoachInsightsByQuery(coachInsightParams);
-      setCoachInsights(res2?.data);
-      setFeedbacks(response?.data);
+
+      // const response = await getFeedbacksByQuery(coachInsightParams);
+      const response = await getCoachInsightsByQuery(coachInsightParams);
+      setCoachInsights(response?.data);
+      // setFeedbacks(response?.data);
     };
     getFeedbacks();
   }, []);

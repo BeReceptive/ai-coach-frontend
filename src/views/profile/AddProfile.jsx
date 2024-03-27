@@ -40,7 +40,7 @@ function classNames(...classes) {
 
 export default function AddProfile() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const {authUser} = useAuth();
+  const { authUser } = useAuth();
 
   return (
     <>
@@ -218,7 +218,8 @@ export default function AddProfile() {
                     Personal Information
                   </h2>
                   <p className="mt-1 text-sm leading-6 text-gray-400 text-left">
-                    Use a permanent address where you can receive mail.
+                    Please ensure that you use the name and email address
+                    associated with your company's records.
                   </p>
                 </div>
 
@@ -273,7 +274,7 @@ export default function AddProfile() {
                         <input
                           type="text"
                           name="first-name"
-                          defaultValue={authUser?.name}
+                          defaultValue={authUser?.firstName}
                           id="first-name"
                           autoComplete="given-name"
                           required={true}
@@ -293,8 +294,10 @@ export default function AddProfile() {
                         <input
                           type="text"
                           name="last-name"
+                          defaultValue={authUser?.lastName}
                           id="last-name"
                           autoComplete="family-name"
+                          required={true}
                           className="bg-gray-100 block w-full rounded-md border-0 py-1.5 pl-4 pr-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         />
                       </div>
